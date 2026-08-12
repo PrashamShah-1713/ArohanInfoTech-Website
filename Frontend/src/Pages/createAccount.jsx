@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import SEOTags from "../Components/SEOTags.jsx";
 import Notification from "../Components/Notification.jsx";
-import styles from "../Styles/createAccount.module.css";
+import styles from "../Styles/CreateAccount.module.css";
 
 const CreateAccount = () => {
   const [username, setusername] = useState("");
