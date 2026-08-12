@@ -1,0 +1,302 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Poppins,sans-serif;
+}
+
+.loginPage{
+
+    min-height:100vh;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    padding:20px;
+
+    background:linear-gradient(135deg,#EAF4FF,#D7E9FF);
+
+}
+
+.loginOverlay {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.loginCard{
+
+    width:100%;
+
+    max-width:460px;
+
+    background:white;
+
+    padding:40px;
+
+    border-radius:24px;
+
+    box-shadow:0 25px 60px rgba(15, 23, 42, 0.18);
+
+    border:1px solid rgba(148, 163, 184, 0.2);
+
+}
+
+.popupHeader {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
+.popupBadge {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #0f2f76, #2563eb);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.35rem;
+}
+
+.loginCard h1{
+
+    text-align:center;
+
+    color:#0F2F76;
+
+    font-size:34px;
+
+    margin:0;
+
+}
+
+.loginCard h2{
+
+    text-align:center;
+
+    margin-top:4px;
+
+    color:#1E3A8A;
+
+    font-size:24px;
+
+}
+
+.loginCard p{
+
+    text-align:center;
+
+    margin:15px 0 30px;
+
+    color:#64748B;
+
+    line-height:1.5;
+
+}
+
+.loginDetails{
+
+    display:flex;
+
+    flex-direction:column;
+
+}
+
+.loginDetails label{
+
+    margin-bottom:8px;
+
+    font-weight:600;
+
+    color:#334155;
+
+}
+
+.loginDetails input{
+
+    height:50px;
+
+    margin-bottom:18px;
+
+    padding:0 15px;
+
+    border:1px solid #CBD5E1;
+
+    border-radius:12px;
+
+    outline:none;
+
+    transition:.3s;
+
+    font-size:15px;
+
+}
+
+.loginDetails input:focus{
+
+    border-color:#2563EB;
+
+    box-shadow:0 0 0 4px rgba(37,99,235,.15);
+
+}
+
+.loginBtn{
+
+    height:50px;
+
+    border:none;
+
+    border-radius:12px;
+
+    background:linear-gradient(135deg,#0F2F76,#2563EB);
+
+    color:white;
+
+    font-size:16px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+}
+
+.loginBtn:hover{
+
+    background:#2563EB;
+
+}
+
+.divider{
+
+    display:flex;
+
+    align-items:center;
+
+    margin:25px 0;
+
+}
+
+.divider::before,
+.divider::after{
+
+    content:"";
+
+    flex:1;
+
+    height:1px;
+
+    background:#CBD5E1;
+
+}
+
+.divider span{
+
+    padding:0 15px;
+
+    color:#64748B;
+
+}
+
+.utilityRow {
+    display: flex;
+    justify-content: flex-end;
+    margin: -8px 0 18px;
+}
+
+.linkButton {
+    background: transparent;
+    border: none;
+    color: #0F2F76;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 0.94rem;
+    padding: 0;
+}
+
+.linkButton:hover {
+    color: #2563eb;
+    text-decoration: underline;
+}
+
+.signupText {
+    margin-top: 22px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    font-size: 15px;
+    color: #64748b;
+}
+
+.signupLink {
+    color: #0F2F76;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.signupLink:hover {
+    color: #2563eb;
+    text-decoration: underline;
+}
+
+/* ---------- Tablet ---------- */
+
+@media(max-width:768px){
+
+.loginCard{
+
+padding:35px;
+
+}
+
+}
+
+/* ---------- Mobile ---------- */
+
+@media(max-width:480px){
+
+.loginCard{
+
+padding:25px;
+
+border-radius:16px;
+
+}
+
+.loginCard h1{
+
+font-size:28px;
+
+}
+
+.loginCard h2{
+
+font-size:20px;
+
+}
+
+.loginDetails input{
+
+height:46px;
+
+}
+
+.loginBtn,
+
+.signupBtn{
+
+height:46px;
+
+}
+
+}

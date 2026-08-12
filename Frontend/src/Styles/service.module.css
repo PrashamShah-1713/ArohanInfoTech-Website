@@ -1,0 +1,182 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+.servicesSection{
+    width:100%;
+    padding:90px 8%;
+    background:#F8FBFF;
+}
+
+.heading{
+    text-align:center;
+    margin-bottom:60px;
+}
+
+.heading p{
+    color:#2563EB;
+    font-size:15px;
+    font-weight:700;
+    letter-spacing:3px;
+    margin-bottom:12px;
+}
+
+.heading h1{
+    font-size:42px;
+    color:#0F172A;
+    margin-bottom:18px;
+}
+
+.heading span{
+    display:block;
+    max-width:760px;
+    margin:auto;
+    color:#64748B;
+    font-size:18px;
+    line-height:1.8;
+}
+
+.serviceGrid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+    gap:30px;
+    align-items:start;
+}
+
+.card{
+    display:flex;
+    flex-direction:column;
+    min-height:430px;
+    background:#fff;
+    border-radius:20px;
+    padding:35px 25px;
+    text-align:center;
+    border:1px solid #E5E7EB;
+    box-shadow:0 10px 25px rgba(15,23,42,.06);
+    transition:.35s;
+}
+
+.card:hover{
+    transform:translateY(-10px);
+    box-shadow:0 20px 45px rgba(37,99,235,.15);
+}
+
+.cardContent{
+    display:flex;
+    flex-direction:column;
+    flex:1;
+}
+
+.card img{
+    width:90px;
+    height:90px;
+    object-fit:contain;
+    margin-bottom:20px;
+}
+
+.card h3{
+    font-size:22px;
+    color:#0F172A;
+    margin-bottom:15px;
+}
+
+.card p{
+    color:#64748B;
+    line-height:1.7;
+    margin-bottom:25px;
+    font-size:15px;
+}
+
+.card button{
+    margin-top:auto;
+    padding:12px 22px;
+    width:100%;
+    border:none;
+    border-radius:10px;
+    background:#2563EB;
+    color:#fff;
+    font-size:15px;
+    font-weight:600;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.card button:hover{
+    background:#1D4ED8;
+}
+
+.details{
+    color:#475569;
+    line-height:1.8;
+    margin-top:15px;
+    margin-bottom:20px;
+    font-size:15px;
+}
+/* Tablet */
+
+@media(max-width:992px){
+
+.servicesSection{
+    padding:80px 6%;
+}
+
+.heading h1{
+    font-size:36px;
+}
+
+}
+
+/* Mobile */
+
+@media(max-width:768px){
+
+.heading h1{
+    font-size:30px;
+}
+
+.heading span{
+    font-size:16px;
+}
+
+.card{
+    padding:30px 20px;
+}
+
+.card img{
+    width:75px;
+    height:75px;
+}
+
+}
+
+/* Small Mobile */
+
+@media(max-width:430px){
+
+.servicesSection{
+    padding:70px 20px;
+}
+
+.heading p{
+    font-size:13px;
+}
+
+.heading h1{
+    font-size:26px;
+}
+
+.heading span{
+    font-size:15px;
+}
+
+.serviceGrid{
+    grid-template-columns:1fr;
+}
+
+.card{
+    padding:28px 18px;
+}
+
+}

@@ -1,0 +1,527 @@
+/* ================================
+   ADMIN DASHBOARD
+================================ */
+
+:global(*) {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:global(body) {
+    margin: 0;
+    background: #f7f9fc;
+    font-family: "Poppins", sans-serif;
+    color: #102653;
+}
+
+/* ================================
+   MAIN DASHBOARD
+================================ */
+
+:global(.admin-dashboard) {
+    width: 100%;
+    min-height: 100vh;
+    padding: 35px 45px 25px;
+    background:
+        radial-gradient(
+            circle at 90% 10%,
+            rgba(30, 92, 180, 0.06),
+            transparent 25%
+        ),
+        #f8faff;
+}
+
+/* ================================
+   WELCOME SECTION
+================================ */
+
+:global(.admin-dashboard)::before {
+    content: "Namaste, Admin 👋";
+    display: block;
+    font-size: 42px;
+    font-weight: 700;
+    color: #102653;
+    margin-bottom: 8px;
+    letter-spacing: -1px;
+}
+
+:global(.admin-dashboard)::after {
+    content: "Manage internships, students, website content and settings from one place.";
+    display: block;
+    font-size: 16px;
+    color: #64748b;
+    margin-bottom: 35px;
+}
+
+/* ================================
+   INTERNSHIP MANAGEMENT
+================================ */
+
+:global(.Internship-Management) {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px;
+    margin-bottom: 22px;
+}
+
+/* ================================
+   ALL MANAGEMENT CARDS
+================================ */
+
+:global(.Ongoing-Internships),
+:global(.Completed-Internships),
+:global(.Add-Internship),
+:global(.delete-Internship),
+:global(.Update-Internship),
+:global(.Products),
+:global(.Team),
+:global(.Interns-data) {
+    background: #ffffff;
+    border: 1px solid #e8edf5;
+    border-radius: 16px;
+    padding: 27px;
+    box-shadow: 0 7px 25px rgba(15, 42, 80, 0.07);
+    transition: all 0.3s ease;
+}
+
+/* Hover */
+
+:global(.Ongoing-Internships:hover),
+:global(.Completed-Internships:hover),
+:global(.Add-Internship:hover),
+:global(.delete-Internship:hover),
+:global(.Update-Internship:hover),
+:global(.Products:hover),
+:global(.Team:hover),
+:global(.Interns-data:hover) {
+    transform: translateY(-4px);
+    box-shadow: 0 14px 35px rgba(15, 42, 80, 0.12);
+}
+
+/* ================================
+   CARD HEADINGS
+================================ */
+
+:global(.Ongoing-Internships h2),
+:global(.Completed-Internships h2),
+:global(.Add-Internship h2),
+:global(.delete-Internship h2),
+:global(.Update-Internship h2),
+:global(.Products h2),
+:global(.Team h2),
+:global(.Interns-data h2) {
+    font-family: "Poppins", sans-serif;
+    color: #102653;
+    font-size: 22px;
+    font-weight: 650;
+    margin-bottom: 9px;
+}
+
+/* ================================
+   CARD DESCRIPTION
+================================ */
+
+:global(.Ongoing-Internships p),
+:global(.Completed-Internships p),
+:global(.Add-Internship p),
+:global(.delete-Internship p),
+:global(.Update-Internship p) {
+    color: #64748b;
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+/* ================================
+   BUTTON BASE
+================================ */
+
+:global(.admin-dashboard button),
+:global(.profile-management button) {
+    border: none;
+    outline: none;
+    cursor: pointer;
+
+    min-height: 44px;
+    padding: 11px 20px;
+
+    border-radius: 9px;
+
+    font-family: "Poppins", sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+
+    color: #ffffff;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        filter 0.2s ease;
+}
+
+:global(.admin-dashboard button:hover),
+:global(.profile-management button:hover) {
+    transform: translateY(-2px);
+    filter: brightness(1.04);
+}
+
+:global(.admin-dashboard button:active),
+:global(.profile-management button:active) {
+    transform: translateY(0);
+}
+
+/* ================================
+   DEFAULT BUTTON
+================================ */
+
+:global(.Ongoing-Internships button),
+:global(.Completed-Internships button),
+:global(.Add-Internship button),
+:global(.Update-Internship button) {
+    background: linear-gradient(
+        135deg,
+        #174ea6,
+        #2869d8
+    );
+
+    box-shadow:
+        0 6px 15px rgba(40, 105, 216, 0.22);
+}
+
+/* ================================
+   INTERNSHIP COLORS
+================================ */
+
+/* Ongoing */
+
+:global(.Ongoing-Internships button) {
+    background: linear-gradient(
+        135deg,
+        #159957,
+        #20b66b
+    );
+
+    box-shadow:
+        0 6px 15px rgba(21, 153, 87, 0.22);
+}
+
+/* Completed */
+
+:global(.Completed-Internships button) {
+    background: linear-gradient(
+        135deg,
+        #6246c7,
+        #7955e8
+    );
+
+    box-shadow:
+        0 6px 15px rgba(98, 70, 199, 0.22);
+}
+
+/* Add */
+
+:global(.Add-Internship button) {
+    background: linear-gradient(
+        135deg,
+        #159957,
+        #20b66b
+    );
+
+    box-shadow:
+        0 6px 15px rgba(21, 153, 87, 0.22);
+}
+
+/* Update */
+
+:global(.Update-Internship button) {
+    background: linear-gradient(
+        135deg,
+        #1554c7,
+        #2869e8
+    );
+
+    box-shadow:
+        0 6px 15px rgba(40, 105, 232, 0.22);
+}
+
+/* Remove */
+
+:global(.delete-Internship button) {
+    background: linear-gradient(
+        135deg,
+        #e52c3b,
+        #f0444f
+    );
+
+    box-shadow:
+        0 6px 15px rgba(229, 44, 59, 0.22);
+}
+
+/* ================================
+   PROFILE MANAGEMENT
+================================ */
+
+:global(.profile-management) {
+    width: 100%;
+
+    display: grid;
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 22px;
+}
+
+/* ================================
+   PRODUCTS
+================================ */
+
+:global(.Products) {
+    min-height: 190px;
+}
+
+:global(.Products h2) {
+    border-left: 4px solid #f3a712;
+    padding-left: 13px;
+}
+
+/* ================================
+   TEAM
+================================ */
+
+:global(.Team) {
+    min-height: 190px;
+}
+
+:global(.Team h2) {
+    border-left: 4px solid #6844d8;
+    padding-left: 13px;
+}
+
+/* ================================
+   INTERNS DATA
+================================ */
+
+:global(.Interns-data) {
+    min-height: 190px;
+}
+
+:global(.Interns-data h2) {
+    border-left: 4px solid #159957;
+    padding-left: 13px;
+}
+
+/* ================================
+   PRODUCT BUTTONS
+================================ */
+
+:global(#Add-Products),
+:global(#Add-Team) {
+    background: linear-gradient(
+        135deg,
+        #159957,
+        #20b66b
+    );
+
+    margin: 10px 7px 0 0;
+    box-shadow:
+        0 5px 14px rgba(21, 153, 87, 0.2);
+}
+
+:global(#Update-Products),
+:global(#Update-Team),
+:global(#Update-Interns) {
+    background: linear-gradient(
+        135deg,
+        #1554c7,
+        #2869e8
+    );
+
+    margin: 10px 7px 0 0;
+    box-shadow:
+        0 5px 14px rgba(40, 105, 232, 0.2);
+}
+
+:global(#Delete-Products),
+:global(#Delete-Team),
+:global(#Delete-Interns) {
+    background: linear-gradient(
+        135deg,
+        #e52c3b,
+        #f0444f
+    );
+
+    margin: 10px 7px 0 0;
+    box-shadow:
+        0 5px 14px rgba(229, 44, 59, 0.2);
+}
+
+/* ================================
+   VIEW INTERNS
+================================ */
+
+:global(#View-Interns) {
+    background: linear-gradient(
+        135deg,
+        #1554c7,
+        #2869e8
+    );
+
+    margin: 10px 7px 0 0;
+}
+
+/* ================================
+   LOGOUT BUTTON
+   Add className="logout-btn"
+   if you have logout button
+================================ */
+
+:global(.logout-btn) {
+    position: absolute;
+    top: 25px;
+    left: 30px;
+
+    padding: 10px 20px;
+
+    border: 1px solid #dbe3ef;
+    border-radius: 9px;
+
+    background: #ffffff;
+    color: #102653;
+
+    font-family: "Poppins", sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 5px 18px rgba(15, 42, 80, 0.08);
+
+    transition: all 0.25s ease;
+}
+
+:global(.logout-btn:hover) {
+    background: #102653;
+    color: #ffffff;
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 8px 20px rgba(16, 38, 83, 0.2);
+}
+
+/* ================================
+   RESPONSIVE - TABLET
+================================ */
+
+@media (max-width: 900px) {
+
+    :global(.admin-dashboard) {
+        padding: 30px 25px;
+    }
+
+    :global(.admin-dashboard)::before {
+        font-size: 34px;
+    }
+
+    :global(.Internship-Management),
+    :global(.profile-management) {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ================================
+   RESPONSIVE - MOBILE
+================================ */
+
+@media (max-width: 600px) {
+
+    :global(.admin-dashboard) {
+        padding: 25px 16px;
+    }
+
+    :global(.admin-dashboard)::before {
+        font-size: 27px;
+        margin-top: 50px;
+    }
+
+    :global(.admin-dashboard)::after {
+        font-size: 13px;
+        line-height: 1.6;
+        margin-bottom: 25px;
+    }
+
+    :global(.Internship-Management),
+    :global(.profile-management) {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    :global(.Ongoing-Internships),
+    :global(.Completed-Internships),
+    :global(.Add-Internship),
+    :global(.delete-Internship),
+    :global(.Update-Internship),
+    :global(.Products),
+    :global(.Team),
+    :global(.Interns-data) {
+        padding: 20px;
+        border-radius: 14px;
+    }
+
+    :global(.Ongoing-Internships h2),
+    :global(.Completed-Internships h2),
+    :global(.Add-Internship h2),
+    :global(.delete-Internship h2),
+    :global(.Update-Internship h2),
+    :global(.Products h2),
+    :global(.Team h2),
+    :global(.Interns-data h2) {
+        font-size: 19px;
+    }
+
+    :global(.admin-dashboard button),
+    :global(.profile-management button) {
+        width: 100%;
+        margin: 6px 0;
+    }
+
+    :global(.logout-btn) {
+        top: 15px;
+        left: 16px;
+        font-size: 13px;
+        padding: 9px 15px;
+    }
+}
+
+/* ================================
+   VERY SMALL MOBILE
+================================ */
+
+@media (max-width: 400px) {
+
+    :global(.admin-dashboard) {
+        padding: 20px 12px;
+    }
+
+    :global(.admin-dashboard)::before {
+        font-size: 24px;
+    }
+
+    :global(.admin-dashboard)::after {
+        font-size: 12px;
+    }
+
+    :global(.Ongoing-Internships h2),
+    :global(.Completed-Internships h2),
+    :global(.Add-Internship h2),
+    :global(.delete-Internship h2),
+    :global(.Update-Internship h2),
+    :global(.Products h2),
+    :global(.Team h2),
+    :global(.Interns-data h2) {
+        font-size: 17px;
+    }
+}

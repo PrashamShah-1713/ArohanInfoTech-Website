@@ -1,0 +1,500 @@
+.dashboardShell {
+  background: #f3f5f9;
+  min-height: 100vh;
+  padding: 18px 22px 30px;
+  color: #102653;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px 18px;
+  margin-bottom: 18px;
+}
+
+.topbar h1 {
+  margin: 0;
+  font-size: clamp(2.1rem, 1.8vw + 1.1rem, 3.1rem);
+  font-weight: 800;
+  letter-spacing: -0.06em;
+  color: #102653;
+}
+
+.topbar p {
+  margin: 8px 0 0;
+  font-size: 1rem;
+  color: #6b7a90;
+}
+
+.topbarRight {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.iconButton {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  border: 1px solid #e5ecf8;
+  background: #ffffff;
+  box-shadow: 0 4px 10px rgba(16, 38, 83, 0.04);
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
+.adminBadge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 14px;
+  padding: 8px 12px;
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #0d6efd, #1d4ed8);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+}
+
+.adminBadge strong {
+  display: block;
+  font-size: 0.9rem;
+  color: #102653;
+}
+
+.adminBadge span {
+  display: block;
+  font-size: 0.74rem;
+  color: #64748b;
+}
+
+.summaryRow {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin: 12px 0 26px;
+}
+
+.summaryCard {
+  background: #fff;
+  border: 1px solid #e6edf6;
+  border-radius: 18px;
+  padding: 18px 18px 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  box-shadow: 0 8px 18px rgba(15, 42, 80, 0.04);
+}
+
+.summaryIcon {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  color: #fff;
+}
+
+.toneBlue {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+}
+
+.toneGreen {
+  background: linear-gradient(135deg, #10b981, #0ea95d);
+}
+
+.tonePurple {
+  background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+}
+
+.toneOrange {
+  background: linear-gradient(135deg, #f59e0b, #e67c10);
+}
+
+.summaryInfo {
+  flex: 1;
+}
+
+.summaryLabel {
+  margin: 0;
+  color: #64748b;
+  font-size: 0.95rem;
+}
+
+.summaryValue {
+  margin: 8px 0 6px;
+  font-size: 2.1rem;
+  font-weight: 800;
+  color: #102653;
+  letter-spacing: -0.06em;
+}
+
+.summaryTrend {
+  color: #10b981;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.mainGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+
+.managementPanel {
+  background: rgba(255, 255, 255, 0.65);
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 24px;
+  padding: 20px 18px 12px;
+  box-shadow: 0 8px 24px rgba(15, 42, 80, 0.04);
+}
+
+.panelHeaderBlock {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 6px 8px 12px;
+  border-bottom: 1px solid #edf2f7;
+}
+
+.panelTitleIcon {
+  width: 42px;
+  height: 42px;
+  background: #edf3ff;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+}
+
+.panelHeaderBlock h2 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #102653;
+}
+
+.panelHeaderBlock p {
+  margin: 4px 0 0;
+  color: #65758d;
+  font-size: 0.95rem;
+}
+
+.quickActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 18px 0 20px;
+}
+
+.quickActions button,
+.filterRow button,
+.successButton,
+.primaryButton,
+.warningButton,
+.dangerButton,
+.secondaryButton,
+.tableEdit,
+.tableDelete {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 700;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease, background 0.2s ease;
+}
+
+.quickActions button {
+  padding: 12px 18px;
+  border: 1px solid #dfeaf7;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+  color: #102653;
+  box-shadow: 0 8px 16px rgba(15, 42, 80, 0.04);
+}
+
+.quickActions button:hover,
+.filterRow button:hover,
+.successButton:hover,
+.primaryButton:hover,
+.warningButton:hover,
+.dangerButton:hover,
+.secondaryButton:hover,
+.tableEdit:hover,
+.tableDelete:hover {
+  transform: translateY(-1px);
+}
+
+.quickActions button:hover,
+.selectedTab {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8) !important;
+  color: #fff !important;
+  border-color: transparent !important;
+  box-shadow: 0 10px 20px rgba(37, 99, 235, 0.22);
+}
+
+.filterRow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0 0 20px;
+  padding: 10px 12px;
+  background: rgba(248, 250, 252, 0.9);
+  border: 1px solid #edf2f7;
+  border-radius: 14px;
+}
+
+.filterRow span {
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #64748b;
+}
+
+.filterRow button {
+  padding: 9px 14px;
+  background: #ffffff;
+  border: 1px solid #dfeaf7;
+  color: #475569;
+  box-shadow: 0 4px 10px rgba(15, 42, 80, 0.02);
+}
+
+.filterActive {
+  background: linear-gradient(135deg, #0f172a, #1e3a8a) !important;
+  color: #fff !important;
+  border-color: transparent !important;
+  box-shadow: 0 10px 18px rgba(15, 23, 42, 0.15) !important;
+}
+
+.formCard {
+  background: #fff;
+  border: 1px solid #e9eef7;
+  border-radius: 16px;
+  padding: 18px;
+  margin-bottom: 18px;
+  box-shadow: 0 8px 16px rgba(15, 42, 80, 0.02);
+}
+
+.formHeader h3 {
+  margin: 0 0 16px;
+  color: #102653;
+  font-size: 1.3rem;
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.formGrid input,
+.formGrid textarea,
+.formGrid select {
+  width: 100%;
+  border: 1px solid #dde7f3;
+  background: linear-gradient(180deg, #f9fbff 0%, #f4f8ff 100%);
+  border-radius: 12px;
+  padding: 12px 14px;
+  font-size: 0.96rem;
+  color: #102653;
+  outline: none;
+  box-shadow: inset 0 1px 2px rgba(148, 163, 184, 0.15);
+}
+
+.formGrid input:focus,
+.formGrid textarea:focus,
+.formGrid select:focus {
+  border-color: #93c5fd;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12), inset 0 1px 2px rgba(148, 163, 184, 0.15);
+}
+
+.checkboxRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 10px 12px;
+  background: linear-gradient(180deg, #f9fbff 0%, #f4f8ff 100%);
+  border: 1px solid #dde7f3;
+  border-radius: 12px;
+  color: #102653;
+  font-weight: 600;
+}
+
+.checkboxRow input {
+  width: 18px;
+  height: 18px;
+  accent-color: #2563eb;
+}
+
+.fullWidth {
+  grid-column: 1 / -1;
+}
+
+.formActions {
+  display: flex;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.successButton,
+.primaryButton,
+.warningButton,
+.dangerButton,
+.secondaryButton,
+.tableEdit,
+.tableDelete {
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 700;
+  transition: 0.2s ease;
+}
+
+.successButton,
+.primaryButton,
+.warningButton,
+.dangerButton {
+  color: #fff;
+  padding: 12px 18px;
+  min-width: 150px;
+  box-shadow: 0 10px 18px rgba(15, 42, 80, 0.1);
+}
+
+.secondaryButton {
+  background: linear-gradient(180deg, #f8fafc 0%, #e2e8f0 100%);
+  color: #102653;
+  padding: 12px 18px;
+  border: 1px solid #dfeaf7;
+  box-shadow: 0 8px 14px rgba(15, 42, 80, 0.04);
+}
+
+.successButton {
+  background: linear-gradient(135deg, #14b86a, #10a56b);
+  box-shadow: 0 12px 22px rgba(16, 185, 129, 0.22);
+}
+
+.primaryButton {
+  background: linear-gradient(135deg, #0d6efd, #1d4ed8);
+  box-shadow: 0 12px 22px rgba(37, 99, 235, 0.2);
+}
+
+.warningButton {
+  background: linear-gradient(135deg, #2a7cf6, #2d68d7);
+  box-shadow: 0 12px 22px rgba(59, 130, 246, 0.2);
+}
+
+.dangerButton {
+  background: linear-gradient(135deg, #ee4d5f, #da323c);
+  box-shadow: 0 12px 22px rgba(239, 68, 68, 0.2);
+}
+
+.listTableWrapper {
+  background: #fff;
+  border: 1px solid #e9eef7;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.dataTable {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+}
+
+.dataTable th,
+.dataTable td {
+  padding: 14px 16px;
+  text-align: left;
+  border-bottom: 1px solid #edf2f7;
+}
+
+.dataTable th {
+  background: #f8fafc;
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #64748b;
+}
+
+.dataTable td {
+  color: #102653;
+}
+
+.tableEdit,
+.tableDelete {
+  padding: 8px 12px;
+  color: #fff;
+  font-size: 0.82rem;
+  box-shadow: 0 8px 15px rgba(15, 42, 80, 0.08);
+}
+
+.tableEdit {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+}
+
+.tableDelete {
+  background: linear-gradient(135deg, #ff5b67, #e53a4d);
+}
+
+.emptyState {
+  padding: 20px;
+  text-align: center;
+  color: #64748b;
+  font-weight: 600;
+}
+
+@media (max-width: 980px) {
+  .summaryRow,
+  .formGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .dashboardShell {
+    padding: 16px 14px 26px;
+  }
+
+  .topbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .topbarRight {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .summaryRow,
+  .formGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .formActions {
+    flex-direction: column;
+  }
+
+  .successButton,
+  .primaryButton,
+  .warningButton,
+  .dangerButton,
+  .secondaryButton {
+    width: 100%;
+  }
+}

@@ -1,0 +1,259 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+.footer {
+  background: #0f172a;
+  color: #f8fafc;
+  padding: 2rem 2rem 0.8rem;
+  margin-top: 3rem;
+}
+
+.footerContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.footerTop {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 2rem;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+}
+
+.brandSection {
+  display: flex;
+  flex-direction: column;
+}
+
+.logoBlock {
+  display: flex;
+  gap: 1.2rem;
+  align-items: flex-start;
+}
+
+.logo {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+  flex-shrink: 0;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.4rem;
+  border-radius: 8px;
+}
+
+.logoBlock h3 {
+  margin: 0 0 0.3rem 0;
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.logoBlock p {
+  margin: 0;
+  color: #cbd5e1;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  max-width: 350px;
+}
+
+.quickLinks,
+.servicesLinks {
+  display: flex;
+  flex-direction: column;
+}
+
+.quickLinks h4,
+.servicesLinks h4 {
+  margin: 0 0 1rem 0;
+  color: #e2e8f0;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.quickLinks ul,
+.servicesLinks ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.quickLinks a,
+.servicesLinks a {
+  color: #cbd5e1;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.3s ease;
+  display: inline-block;
+}
+
+.quickLinks a:hover,
+.servicesLinks a:hover {
+  color: #60a5fa;
+}
+
+.footerBottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.8rem 0 0;
+  gap: 1.5rem;
+}
+
+.contactInfo {
+  flex: 1;
+}
+
+.contactInfo p {
+  margin: 0.5rem 0;
+  color: #cbd5e1;
+  font-size: 0.9rem;
+}
+
+.contactInfo strong {
+  color: #e2e8f0;
+}
+
+.contactInfo a {
+  color: #60a5fa;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.contactInfo a:hover {
+  color: #93c5fd;
+  text-decoration: underline;
+}
+
+.socialLinks {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.socialLinks a {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  color: white;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.whatsappLink {
+  background: rgba(37, 211, 102, 0.12) !important;
+}
+
+.whatsappLink:hover {
+  background: #25d366 !important;
+  transform: translateY(-3px);
+}
+
+.instagramLink {
+  background: rgba(224, 47, 112, 0.12) !important;
+}
+
+.instagramLink:hover {
+  background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%) !important;
+  transform: translateY(-3px);
+}
+
+.linkedinLink {
+  background: rgba(0, 119, 181, 0.12) !important;
+}
+
+.linkedinLink:hover {
+  background: #0077b5 !important;
+  transform: translateY(-3px);
+}
+
+.socialLinks a svg {
+  width: 24px;
+  height: 24px;
+}
+
+.bottomBar {
+  max-width: 1200px;
+  margin: 0.5rem auto 0;
+  padding-top: 0.8rem;
+  color: #94a3b8;
+  font-size: 0.75rem;
+  text-align: center;
+}
+
+@media (max-width: 1024px) {
+  .footerTop {
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .footer {
+    padding: 2rem 1rem 1rem;
+  }
+
+  .footerTop {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+  }
+
+  .footerBottom {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.5rem;
+  }
+
+  .socialLinks {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .contactInfo {
+    width: 100%;
+  }
+}
+
+@media (max-width: 600px) {
+  .footer {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .logoBlock {
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+
+  .logo {
+    width: 60px;
+    height: 60px;
+  }
+
+  .footerBottom {
+    align-items: center;
+  }
+
+  .socialLinks {
+    justify-content: center;
+  }
+
+  .contactInfo p {
+    text-align: center;
+  }
+}

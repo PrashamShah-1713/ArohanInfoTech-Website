@@ -1,0 +1,276 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+.page {
+  min-height: 100vh;
+}
+
+.heroSection {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2.5rem;
+  align-items: center;
+  padding: 4rem 2rem 3rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.heroImageSection {
+  width: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+.heroContent h1 {
+  font-size: clamp(2.2rem, 4vw, 3.4rem);
+  line-height: 1.1;
+  margin: 0.8rem 0 1rem;
+  color: #07111f;
+}
+
+.heroContent p {
+  font-size: 1.02rem;
+  color: #4b5563;
+  line-height: 1.8;
+  max-width: 620px;
+}
+
+.eyebrow,
+.sectionTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.45rem 0.8rem;
+  border-radius: 999px;
+  background: #e8f0ff;
+  color: #315bcb;
+  font-size: 0.84rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.primaryButton,
+.secondaryButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.9rem 1.2rem;
+  border-radius: 999px;
+  font-weight: 600;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.primaryButton {
+  background: linear-gradient(135deg, #2563eb, #0f172a);
+  color: white;
+  box-shadow: 0 10px 25px rgba(37, 99, 235, 0.18);
+}
+
+.secondaryButton {
+  background: white;
+  color: #0f172a;
+  border: 1px solid #dbe3ee;
+}
+
+.primaryButton:hover,
+.secondaryButton:hover {
+  transform: translateY(-2px);
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.statCard {
+  background: white;
+  border: 1px solid #e5ebf2;
+  border-radius: 16px;
+  padding: 1rem;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.04);
+}
+
+.statCard strong {
+  display: block;
+  font-size: 1.2rem;
+  color: #07111f;
+}
+
+.statCard span {
+  color: #64748b;
+  font-size: 0.92rem;
+}
+
+.heroVisual {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.heroImageCard {
+  background: transparent;
+  border-radius: 0;
+  padding: 0;
+  box-shadow: none;
+  width: 100%;
+  max-width: 100%;
+}
+
+.heroImageCard img {
+  width: 100%;
+  border-radius: 0;
+  object-fit: cover;
+  display: block;
+  height: auto;
+}
+
+.section {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 2rem 3rem;
+}
+
+.sectionHeader {
+  max-width: 700px;
+  margin-bottom: 1.5rem;
+}
+
+.sectionHeader h2,
+.aboutText h2 {
+  font-size: clamp(1.7rem, 3vw, 2.3rem);
+  margin: 0.8rem 0;
+  color: #07111f;
+}
+
+.sectionHeader p,
+.aboutText p,
+.highlightCard p {
+  color: #64748b;
+  line-height: 1.8;
+}
+
+.servicesGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.2rem;
+}
+
+.serviceCard {
+  background: white;
+  border: 1px solid #e4eaf2;
+  border-radius: 18px;
+  padding: 1.3rem;
+  box-shadow: 0 10px 20px rgba(15, 23, 42, 0.04);
+}
+
+.serviceIcon {
+  width: 42px;
+  height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: #e8f0ff;
+  color: #2563eb;
+  margin-bottom: 0.8rem;
+}
+
+.serviceCard h3 {
+  margin: 0 0 0.5rem;
+  color: #07111f;
+}
+
+.serviceCard p {
+  margin: 0;
+  color: #64748b;
+  line-height: 1.7;
+}
+
+.aboutSection {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem 2rem 4rem;
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.featureList {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.featureList li {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: #374151;
+}
+
+.highlightCard {
+  background: linear-gradient(135deg, #07111f, #1e3a8a);
+  color: white;
+  padding: 1.6rem;
+  border-radius: 22px;
+  box-shadow: 0 18px 35px rgba(7, 17, 31, 0.16);
+}
+
+.highlightCard h3 {
+  margin-top: 0;
+  font-size: 1.3rem;
+}
+
+.highlightCard a {
+  display: inline-flex;
+  margin-top: 0.8rem;
+  color: #dbeafe;
+  font-weight: 600;
+}
+
+@media (max-width: 900px) {
+  .heroSection,
+  .aboutSection {
+    grid-template-columns: 1fr;
+  }
+
+  .heroSection {
+    padding-top: 2rem;
+  }
+}
+
+@media (max-width: 700px) {
+  .heroSection,
+  .section,
+  .aboutSection {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .statsGrid,
+  .servicesGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .actions {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

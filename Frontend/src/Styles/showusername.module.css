@@ -1,0 +1,63 @@
+.userBadge {
+  position: sticky;
+  top: 88px;
+  margin: 12px 24px 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+  color: #1d4ed8;
+  font-weight: 700;
+  font-size: 0.95rem;
+  box-shadow: 0 10px 24px rgba(37, 99, 235, 0.16);
+  border: 1px solid rgba(29, 78, 216, 0.14);
+  z-index: 1100;
+  backdrop-filter: blur(8px);
+}
+
+.userBadgeIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.8);
+  font-size: 1rem;
+}
+
+.userBadgeText {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 180px;
+}
+
+@media (max-width: 768px) {
+  .userBadge {
+    top: 84px;
+    margin: 10px 14px 0 auto;
+    padding: 8px 12px;
+    font-size: 0.9rem;
+  }
+
+  .userBadgeText {
+    max-width: 140px;
+  }
+}
+
+@media (max-width: 480px) {
+  .userBadge {
+    top: 78px;
+    margin: 8px 12px 0 auto;
+    padding: 7px 10px;
+    font-size: 0.85rem;
+  }
+
+  .userBadgeText {
+    max-width: 110px;
+  }
+}
