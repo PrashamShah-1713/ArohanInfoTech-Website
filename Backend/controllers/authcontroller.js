@@ -171,14 +171,23 @@ async function sendOtp(req, res) {
     user.resetPasswordToken = null;
     await user.save();
 
-    await sendPasswordResetOtpEmail({
-      to: user.useremail,
-      username: user.username,
-      otp,
-    });
-
-    return res.json({ success: true, message: 'OTP sent to your registered email address' });
+    try {
+      await sendPasswordResetOtpEmail({
+        to: user.useremail,
+        username: user.username,
+        otp,
+      });
+      return res.json({ success: true, message: 'OTP sent to your registered email address' });
+    } catch (emailError) {
+      console.error('[OTP] Email sending failed:', emailError.message);
+      // Clear the OTP if email failed
+      user.resetOtp = null;
+      user.resetOtpExpiresAt = null;
+      await user.save();
+      return res.status(500).json({ success: false, message: emailError.message || 'Failed to send OTP. Please try again.' });
+    }
   } catch (error) {
+    console.error('[OTP] Error:', error.message);
     return res.status(500).json({ success: false, message: 'Unable to send OTP' });
   }
 }

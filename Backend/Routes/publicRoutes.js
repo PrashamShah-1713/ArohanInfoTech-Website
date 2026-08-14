@@ -64,7 +64,8 @@ router.post('/internships/enroll', authMiddleware, async (req, res) => {
       isPublished: true,
     });
 
-    void sendInternshipEnrollmentEmail({
+    // Send enrollment email asynchronously without blocking response
+    sendInternshipEnrollmentEmail({
       to: internemail,
       username: internname,
       internshipTitle: appliedInternshipTitle || 'Arohan Internship',
@@ -77,16 +78,27 @@ router.post('/internships/enroll', authMiddleware, async (req, res) => {
         college: interncollege,
         userId: userId || req.user._id,
       },
-    }).catch((emailError) => {
-      console.error('Enrollment email failed:', emailError);
-    });
+    })
+      .then((emailResult) => {
+        if (emailResult.success) {
+          console.log('[ENROLL] Confirmation email sent successfully to:', internemail);
+        } else if (emailResult.skipped) {
+          console.log('[ENROLL] Email notification skipped:', emailResult.message);
+        } else {
+          console.warn('[ENROLL] Email sending returned failure:', emailResult.message);
+        }
+      })
+      .catch((emailError) => {
+        console.error('[ENROLL] Email sending failed:', emailError.message || emailError);
+      });
 
     res.status(201).json({
       success: true,
-      message: 'Enrollment successful',
+      message: 'Enrollment successful. A confirmation email will be sent to your email address.',
       data: entry,
     });
   } catch (error) {
+    console.error('[ENROLL] Error:', error.message);
     res.status(500).json({ success: false, message: 'Unable to complete enrollment' });
   }
 });
