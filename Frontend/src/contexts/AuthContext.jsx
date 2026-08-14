@@ -14,6 +14,12 @@ export const AuthProvider = ({ children }) => {
     const savedUser = localStorage.getItem('authUser')
     return savedUser ? JSON.parse(savedUser) : null
   })
+  const [authToken, setAuthToken] = useState(() => {
+    if (typeof window === 'undefined') {
+      return null
+    }
+    return localStorage.getItem('authToken')
+  })
   const [loadingAuth, setLoadingAuth] = useState(true)
 
   useEffect(() => {
@@ -61,14 +67,22 @@ export const AuthProvider = ({ children }) => {
     }
   }, [])
 
-  const persistUser = (nextUser) => {
+  const persistUser = (nextUser, token = null) => {
     setUser(nextUser)
+    if (token) {
+      setAuthToken(token)
+    }
 
     if (typeof window !== 'undefined') {
       if (nextUser) {
         localStorage.setItem('authUser', JSON.stringify(nextUser))
+        if (token) {
+          localStorage.setItem('authToken', token)
+        }
       } else {
         localStorage.removeItem('authUser')
+        localStorage.removeItem('authToken')
+        setAuthToken(null)
       }
     }
   }
@@ -111,7 +125,7 @@ export const AuthProvider = ({ children }) => {
   }
 
   return (
-    <AuthContext.Provider value={{ user, setUser: persistUser, logout, deleteAccount, updateProfile, loadingAuth }}>
+    <AuthContext.Provider value={{ user, setUser: persistUser, authToken, logout, deleteAccount, updateProfile, loadingAuth }}>
       {children}
     </AuthContext.Provider>
   )

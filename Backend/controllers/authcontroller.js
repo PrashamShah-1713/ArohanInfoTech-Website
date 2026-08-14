@@ -71,6 +71,7 @@ async function createUser(req, res) {
     res.status(201).json({
       success: true,
       message: 'User created successfully and logged in',
+      token: token,
       user: {
         _id: user._id,
         username: user.username,
@@ -115,6 +116,7 @@ async function login(req, res) {
     res.json({
       success: true,
       message: 'Login success',
+      token: token,
       user: {
         _id: user._id,
         username: user.username,

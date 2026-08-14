@@ -35,7 +35,8 @@ const Login = () => {
 
       if (response.data.success) {
         const userData = response.data.user;
-        setUser(userData);
+        const token = response.data.token;
+        setUser(userData, token);
         
         if (userData.role?.toLowerCase() === "admin") {
           navigate("/admin");

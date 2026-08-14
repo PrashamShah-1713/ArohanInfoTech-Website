@@ -1,10 +1,11 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import axios from 'axios';
 import Navbar from '../Components/Navbar';
 import AdminStatCard from '../Components/AdminStatCard.jsx';
 import SEOTags from '../Components/SEOTags.jsx';
 import Notification from '../Components/Notification.jsx';
 import ConfirmModal from '../Components/ConfirmModal.jsx';
+import { AuthContext } from '../contexts/AuthContext.jsx';
 import styles from '../Styles/admin.module.css';
 
 const API = `${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/api`;
@@ -52,6 +53,7 @@ const initialIntern = {
 };
 
 const Admin = () => {
+  const { authToken } = useContext(AuthContext);
   const [stats, setStats] = useState({ internships: 0, projects: 0, team: 0, interns: 0, internshipsThisMonth: 0, projectsThisMonth: 0, teamThisMonth: 0, internsThisMonth: 0 });
   const [internships, setInternships] = useState([]);
   const [projects, setProjects] = useState([]);
@@ -69,6 +71,11 @@ const Admin = () => {
   const [notification, setNotification] = useState({ message: '', type: 'info' });
   const [confirmDelete, setConfirmDelete] = useState({ open: false, type: null, id: null });
 
+  const getHeaders = () => ({
+    withCredentials: true,
+    headers: authToken ? { Authorization: `Bearer ${authToken}` } : {},
+  });
+
   const actionConfig = useMemo(
     () => ({
       internships: { title: 'Internship Management', subtitle: 'Manage all internship opportunities.' },
@@ -85,13 +92,14 @@ const Admin = () => {
       setError('');
 
       const query = nextStatus && nextStatus !== 'all' ? `?status=${nextStatus}` : '';
+      const headers = getHeaders();
 
       const [overviewRes, internshipsRes, projectsRes, teamRes, internsRes] = await Promise.all([
-        axios.get(`${API}/admin/overview`, { withCredentials: true }),
-        axios.get(`${API}/admin/internships${query}`, { withCredentials: true }),
-        axios.get(`${API}/admin/projects`, { withCredentials: true }),
-        axios.get(`${API}/admin/team`, { withCredentials: true }),
-        axios.get(`${API}/admin/interns${query}`, { withCredentials: true }),
+        axios.get(`${API}/admin/overview`, headers),
+        axios.get(`${API}/admin/internships${query}`, headers),
+        axios.get(`${API}/admin/projects`, headers),
+        axios.get(`${API}/admin/team`, headers),
+        axios.get(`${API}/admin/interns${query}`, headers),
       ]);
 
       if (overviewRes.data.success) {
@@ -159,7 +167,7 @@ const Admin = () => {
         method,
         url,
         data: payload,
-        withCredentials: true,
+        ...getHeaders(),
       });
 
       if (response.data.success) {
@@ -180,7 +188,7 @@ const Admin = () => {
       if (type === 'team') url = `${API}/admin/team/${id}`;
       if (type === 'intern') url = `${API}/admin/interns/${id}`;
 
-      const response = await axios.delete(url, { withCredentials: true });
+      const response = await axios.delete(url, getHeaders());
       if (response.data.success) {
         await fetchData();
         setNotification({ message: response.data.message || 'Deleted successfully', type: 'success' });

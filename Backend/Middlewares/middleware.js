@@ -1,7 +1,15 @@
 const { getuser } = require('../controllers/authcontroller');
 
 function checkforAuthentication(req, res, next) {
-  const useruid = req.cookies.uid;
+  let useruid = req.cookies.uid;
+
+  // Check Authorization header if cookie not found
+  if (!useruid) {
+    const authHeader = req.headers.authorization;
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      useruid = authHeader.substring(7);
+    }
+  }
 
   if (!useruid) {
     return next();
@@ -25,7 +33,15 @@ function restrictTO(roles) {
 }
 
 async function restricttologgedinuseronly(req, res, next) {
-  const useruid = req.cookies.uid;
+  let useruid = req.cookies.uid;
+
+  // Check Authorization header if cookie not found
+  if (!useruid) {
+    const authHeader = req.headers.authorization;
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      useruid = authHeader.substring(7);
+    }
+  }
 
   if (!useruid) {
     return res.status(401).json({ success: false, message: 'Not authenticated' });
