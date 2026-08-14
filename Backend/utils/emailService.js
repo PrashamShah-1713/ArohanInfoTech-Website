@@ -2,13 +2,19 @@ const nodemailer = require('nodemailer');
 
 let transporter = null;
 let emailConfigValid = false;
+let verificationAttempted = false;
 
-const initializeTransporter = () => {
+const initializeTransporter = async () => {
   const user = process.env.EMAIL_USER;
   const pass = process.env.EMAIL_PASS;
 
+  console.log('[EMAIL] Initializing email service...');
+  console.log('[EMAIL] EMAIL_USER:', user ? `${user.substring(0, 5)}...` : 'NOT SET');
+  console.log('[EMAIL] EMAIL_PASS:', pass ? 'SET' : 'NOT SET');
+
   if (!user || !pass) {
-    console.warn('[EMAIL] Email credentials not configured. Email sending will be disabled.');
+    console.error('[EMAIL] ❌ Email credentials not configured!');
+    console.error('[EMAIL] Required env vars: EMAIL_USER, EMAIL_PASS');
     emailConfigValid = false;
     return;
   }
@@ -18,20 +24,44 @@ const initializeTransporter = () => {
       service: 'gmail',
       auth: { user, pass },
     });
+    
+    console.log('[EMAIL] Transport created, verifying connection...');
+    
+    // Verify the connection
+    await transporter.verify();
     emailConfigValid = true;
-    console.log('[EMAIL] Transporter initialized successfully');
+    verificationAttempted = true;
+    console.log('[EMAIL] ✅ Email service initialized and verified successfully');
   } catch (error) {
-    console.error('[EMAIL] Failed to initialize transporter:', error.message);
+    console.error('[EMAIL] ❌ Failed to initialize email service:', error.message);
+    console.error('[EMAIL] Error details:', error);
     emailConfigValid = false;
+    verificationAttempted = true;
   }
 };
 
 // Initialize transporter on module load
-initializeTransporter();
+initializeTransporter().catch((err) => {
+  console.error('[EMAIL] Async initialization error:', err);
+});
+
+function getEmailStatus() {
+  return {
+    initialized: transporter !== null,
+    valid: emailConfigValid,
+    verificationAttempted,
+    hasCredentials: !!(process.env.EMAIL_USER && process.env.EMAIL_PASS),
+  };
+}
 
 async function sendPasswordResetOtpEmail({ to, username, otp }) {
+  const status = getEmailStatus();
+  console.log('[EMAIL] sendPasswordResetOtpEmail called', { to, status });
+
   if (!emailConfigValid || !transporter) {
-    throw new Error('Email service is not configured. Please contact support.');
+    const errorMsg = `Email service not configured. Status: ${JSON.stringify(status)}`;
+    console.error('[EMAIL] ❌', errorMsg);
+    throw new Error(errorMsg);
   }
 
   if (!to) {
@@ -39,6 +69,7 @@ async function sendPasswordResetOtpEmail({ to, username, otp }) {
   }
 
   try {
+    console.log('[EMAIL] Sending OTP to:', to);
     const mailResult = await transporter.sendMail({
       from: process.env.EMAIL_FROM || process.env.EMAIL_USER,
       to,
@@ -53,17 +84,20 @@ async function sendPasswordResetOtpEmail({ to, username, otp }) {
       `,
     });
 
-    console.log('[EMAIL] Password reset OTP sent successfully to:', to);
+    console.log('[EMAIL] ✅ Password reset OTP sent successfully to:', to, 'MessageID:', mailResult.messageId);
     return { success: true, messageId: mailResult.messageId };
   } catch (error) {
-    console.error('[EMAIL] Failed to send password reset OTP:', error.message);
+    console.error('[EMAIL] ❌ Failed to send password reset OTP:', error.message);
     throw new Error(`Failed to send OTP: ${error.message}`);
   }
 }
 
 async function sendInternshipEnrollmentEmail({ to, username, internshipTitle, internshipDuration, startDate, userDetails }) {
+  const status = getEmailStatus();
+  console.log('[EMAIL] sendInternshipEnrollmentEmail called', { to, status });
+
   if (!emailConfigValid || !transporter) {
-    console.warn('[EMAIL] Email service not configured. Enrollment notification skipped.');
+    console.warn('[EMAIL] ⚠️ Email service not configured. Enrollment notification skipped.');
     return { success: true, skipped: true, message: 'Email notification skipped - service not configured' };
   }
 
@@ -73,6 +107,7 @@ async function sendInternshipEnrollmentEmail({ to, username, internshipTitle, in
   }
 
   try {
+    console.log('[EMAIL] Sending enrollment email to:', to);
     const mailResult = await transporter.sendMail({
       from: process.env.EMAIL_FROM || process.env.EMAIL_USER,
       to,
@@ -96,10 +131,10 @@ async function sendInternshipEnrollmentEmail({ to, username, internshipTitle, in
       `,
     });
 
-    console.log('[EMAIL] Enrollment email sent successfully to:', to);
+    console.log('[EMAIL] ✅ Enrollment email sent successfully to:', to, 'MessageID:', mailResult.messageId);
     return { success: true, messageId: mailResult.messageId };
   } catch (error) {
-    console.error('[EMAIL] Failed to send enrollment email:', error.message);
+    console.error('[EMAIL] ❌ Failed to send enrollment email:', error.message);
     return { success: false, message: `Failed to send email: ${error.message}` };
   }
 }
@@ -107,4 +142,5 @@ async function sendInternshipEnrollmentEmail({ to, username, internshipTitle, in
 module.exports = {
   sendPasswordResetOtpEmail,
   sendInternshipEnrollmentEmail,
+  getEmailStatus,
 };

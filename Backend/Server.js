@@ -107,6 +107,17 @@ function createApp() {
   app.use('/api/public', publicRoutes);
   app.use('/api/admin', adminRoutes);
 
+  app.get('/health', (req, res) => {
+    const { getEmailStatus } = require('./utils/emailService');
+    const emailStatus = getEmailStatus();
+    res.json({
+      success: true,
+      status: 'Backend is running',
+      email: emailStatus,
+      timestamp: new Date().toISOString(),
+    });
+  });
+
   app.get('/', (req, res) => {
     res.send('Arohan backend running');
   });
