@@ -143,6 +143,7 @@ async function getCurrentUser(req, res) {
     .sort({ createdAt: -1 });
 
   const userData = user.toObject();
+  userData.role = user.userrole;
   userData.internships = internships;
 
   res.json({ success: true, user: userData });

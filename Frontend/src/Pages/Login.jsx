@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import styles from "../Styles/login.module.css";
 import SEOTags from "../Components/SEOTags.jsx";
@@ -12,12 +12,16 @@ const Login = () => {
   const [userpassword, setUserpassword] = useState("");
   const [notification, setNotification] = useState({ message: "", type: "info" });
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/";
 
   useEffect(() => {
     if (user?.role === "admin") {
       navigate("/admin");
+    } else if (user) {
+      navigate(from);
     }
-  }, [user, navigate]);
+  }, [user, navigate, from]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -30,11 +34,13 @@ const Login = () => {
       );
 
       if (response.data.success) {
-        setUser(response.data.user);
-        if (response.data.user.role?.toLowerCase() === "admin") {
+        const userData = response.data.user;
+        setUser(userData);
+        
+        if (userData.role?.toLowerCase() === "admin") {
           navigate("/admin");
         } else {
-          navigate("/");
+          navigate(from, { replace: true });
         }
       } else {
         setNotification({ message: response.data.message || "Login failed", type: "error" });
