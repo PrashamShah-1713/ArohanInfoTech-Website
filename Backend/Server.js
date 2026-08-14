@@ -97,12 +97,24 @@ function createApp() {
     next();
   });
 
+  // Request logging middleware
+  app.use((req, res, next) => {
+    console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`);
+    next();
+  });
+
   app.use('/api/Users', authRoute);
   app.use('/api/public', publicRoutes);
   app.use('/api/admin', adminRoutes);
 
   app.get('/', (req, res) => {
     res.send('Arohan backend running');
+  });
+
+  // 404 handler
+  app.use((req, res) => {
+    console.log(`[404] No handler found for ${req.method} ${req.path}`);
+    res.status(404).json({ success: false, message: 'Route not found' });
   });
 
   return app;

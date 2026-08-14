@@ -2,14 +2,18 @@ const Internship = require('../Models/Interships');
 
 async function getAllInternships(req, res) {
   try {
+    console.log('[internshipController] getAllInternships called', { query: req.query });
     const query = {};
     if (req.query.status) query.status = req.query.status;
     if (req.query.page) query.page = req.query.page;
     if (req.query.isPublished !== undefined) query.isPublished = req.query.isPublished === 'true';
 
+    console.log('[internshipController] Querying with:', query);
     const internships = await Internship.find(query).sort({ interstartdate: -1 });
+    console.log('[internshipController] Found internships:', internships.length);
     res.json({ success: true, data: internships });
   } catch (err) {
+    console.error('[internshipController] Error:', err.message);
     res.status(500).json({ success: false, message: 'Unable to load internships' });
   }
 }

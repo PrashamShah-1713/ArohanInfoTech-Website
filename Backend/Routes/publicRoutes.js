@@ -7,7 +7,14 @@ const { getAllProjects } = require('../controllers/ourWorkController');
 const { getAllTeamMembers } = require('../controllers/teamController');
 const { sendInternshipEnrollmentEmail } = require('../utils/emailService');
 
+// Logging middleware
+router.use((req, res, next) => {
+  console.log(`[PublicRoutes] ${req.method} ${req.path}`);
+  next();
+});
+
 router.get('/internships', (req, res, next) => {
+  console.log('[PublicRoutes] Processing GET /internships request');
   req.query.isPublished = 'true';
   if (!req.query.page) {
     req.query.page = 'internships';
