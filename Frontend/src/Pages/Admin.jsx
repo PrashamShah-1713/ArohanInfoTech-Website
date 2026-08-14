@@ -53,7 +53,10 @@ const initialIntern = {
 };
 
 const Admin = () => {
-  const { authToken } = useContext(AuthContext);
+  const context = useContext(AuthContext);
+  const { authToken: contextToken } = context || {};
+  const authToken = contextToken || (typeof window !== 'undefined' ? localStorage.getItem('authToken') : null);
+  
   const [stats, setStats] = useState({ internships: 0, projects: 0, team: 0, interns: 0, internshipsThisMonth: 0, projectsThisMonth: 0, teamThisMonth: 0, internsThisMonth: 0 });
   const [internships, setInternships] = useState([]);
   const [projects, setProjects] = useState([]);
@@ -70,6 +73,10 @@ const Admin = () => {
   const [internForm, setInternForm] = useState(initialIntern);
   const [notification, setNotification] = useState({ message: '', type: 'info' });
   const [confirmDelete, setConfirmDelete] = useState({ open: false, type: null, id: null });
+
+  useEffect(() => {
+    console.log('Admin authToken:', authToken ? 'Present' : 'Missing');
+  }, [authToken]);
 
   const getHeaders = () => ({
     withCredentials: true,
