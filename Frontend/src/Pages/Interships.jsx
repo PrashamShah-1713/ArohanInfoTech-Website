@@ -8,7 +8,9 @@ import Notification from '../Components/Notification.jsx';
 import { AuthContext } from '../contexts/AuthContext.jsx';
 
 const Internships = () => {
-  const { user } = useContext(AuthContext);
+  const context = useContext(AuthContext);
+  const { user, authToken: contextToken } = context || {};
+  const authToken = contextToken || (typeof window !== 'undefined' ? localStorage.getItem('authToken') : null);
   const [internships, setInternships] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -95,6 +97,7 @@ const Internships = () => {
 
       const response = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/api/public/internships/enroll`, payload, {
         withCredentials: true,
+        headers: authToken ? { Authorization: `Bearer ${authToken}` } : {},
       });
 
       if (response.data.success) {

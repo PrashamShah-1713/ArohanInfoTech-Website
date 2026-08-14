@@ -34,14 +34,17 @@ export const AuthProvider = ({ children }) => {
 
     async function fetchCurrentUser() {
       const savedUser = localStorage.getItem('authUser')
+      const savedToken = localStorage.getItem('authToken')
       if (!savedUser) {
         setLoadingAuth(false)
         return
       }
 
       try {
+        const headers = savedToken ? { Authorization: `Bearer ${savedToken}` } : {}
         const response = await axios.get(`${API_BASE_URL}/api/Users/me`, {
           withCredentials: true,
+          headers,
         })
 
         if (response.data.success) {
@@ -89,7 +92,9 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     try {
-      await axios.post(`${API_BASE_URL}/api/Users/logout`, {}, { withCredentials: true })
+      const token = typeof window !== 'undefined' ? localStorage.getItem('authToken') : null;
+      const headers = token ? { Authorization: `Bearer ${token}` } : {};
+      await axios.post(`${API_BASE_URL}/api/Users/logout`, {}, { withCredentials: true, headers })
     } catch (error) {
       // ignore logout failure, clear client state
     }
@@ -99,7 +104,9 @@ export const AuthProvider = ({ children }) => {
 
   const deleteAccount = async () => {
     try {
-      await axios.post(`${API_BASE_URL}/api/Users/logout`, {}, { withCredentials: true })
+      const token = typeof window !== 'undefined' ? localStorage.getItem('authToken') : null;
+      const headers = token ? { Authorization: `Bearer ${token}` } : {};
+      await axios.post(`${API_BASE_URL}/api/Users/logout`, {}, { withCredentials: true, headers })
     } catch (error) {
       // ignore; still clear local auth state
     }
@@ -109,12 +116,15 @@ export const AuthProvider = ({ children }) => {
 
   const updateProfile = async (profile) => {
     try {
+      const token = typeof window !== 'undefined' ? localStorage.getItem('authToken') : null;
+      const headers = token ? { Authorization: `Bearer ${token}` } : {};
       const response = await axios.patch(`${API_BASE_URL}/api/Users/profile`, profile, {
         withCredentials: true,
+        headers,
       })
 
       if (response.data.success) {
-        persistUser(response.data.user)
+        persistUser(response.data.user, token)
       }
 
       return response.data
