@@ -41,16 +41,33 @@ function createApp() {
   app.disable('x-powered-by');
   app.set('trust proxy', 1);
 
+  const allowedOrigins = [
+    'http://localhost:5173',
+    'http://localhost:3000',
+    'https://arohaninfotech-frontend.onrender.com'
+  ];
+
   app.use(
     cors({
-      origin: [
-        'http://localhost:5173',
-        'http://127.0.0.1:5173',
-        process.env.VITE_API_URL
-      ].filter(Boolean),
-      credentials: true
+      origin(origin, callback) {
+        if (!origin) {
+          return callback(null, true);
+        }
+
+        if (allowedOrigins.includes(origin)) {
+          return callback(null, true);
+        }
+
+        return callback(new Error('Not allowed by CORS'));
+      },
+      credentials: true,
+      methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+      allowedHeaders: ['Content-Type', 'Authorization']
     })
   );
+
+  app.options('*', cors());
+
   app.use(express.json({ limit: '1mb' }));
   app.use(cookieParser());
 
