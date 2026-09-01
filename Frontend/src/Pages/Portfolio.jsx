@@ -6,7 +6,6 @@ import SEOTags from '../Components/SEOTags.jsx';
 
 const Portfolio = () => {
   const [projects, setProjects] = useState([]);
-  const [clientLogos, setClientLogos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -16,25 +15,15 @@ const Portfolio = () => {
         setLoading(true);
         setError('');
 
-        const [projectsRes, clientLogosRes] = await Promise.all([
-          axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/api/public/projects`, {
-            params: { page: 'portfolio' },
-            withCredentials: true,
-          }),
-          axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/api/public/brand-assets`, {
-            params: { page: 'portfolio', type: 'client-logo' },
-            withCredentials: true,
-          }),
-        ]);
+        const projectsRes = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/api/public/projects`, {
+          params: { page: 'portfolio' },
+          withCredentials: true,
+        });
 
         if (projectsRes.data.success) {
           setProjects(projectsRes.data.data || []);
         } else {
           setError(projectsRes.data.message || 'Unable to load portfolio');
-        }
-
-        if (clientLogosRes.data.success) {
-          setClientLogos(clientLogosRes.data.data || []);
         }
       } catch (err) {
         setError(err.response?.data?.message || 'Unable to load portfolio');
@@ -45,88 +34,6 @@ const Portfolio = () => {
 
     fetchPortfolioData();
   }, []);
-
-  const renderClientBrandSection = () => {
-    const logosToShow = clientLogos.sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
-
-    if (logosToShow.length === 0) {
-      return null;
-    }
-
-    return (
-      <section style={{
-        maxWidth: '1200px',
-        margin: '3rem auto',
-        padding: '2.5rem 0',
-      }}>
-        <h2 style={{
-          fontSize: '2rem',
-          fontWeight: 700,
-          marginBottom: '2rem',
-          color: '#0f172a',
-          textAlign: 'center',
-        }}>
-          Our Clients
-        </h2>
-
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
-          gap: '1rem',
-          backgroundColor: '#f3f4f6',
-          padding: '2rem 1.5rem',
-          borderRadius: '16px',
-          border: '1px solid #e5e7eb',
-        }}>
-          {logosToShow.map((logo, index) => (
-            <div
-              key={logo._id || index}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                minHeight: '100px',
-                backgroundColor: '#fff',
-                borderRadius: '12px',
-                padding: '1rem',
-                border: '1px solid #e5e7eb',
-                transition: 'all 0.3s ease',
-                cursor: 'pointer',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'translateY(-4px)';
-                e.currentTarget.style.boxShadow = '0 8px 16px rgba(15, 23, 42, 0.08)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.05)';
-              }}
-            >
-              {logo.imageUrl ? (
-                <img
-                  src={logo.imageUrl}
-                  alt={logo.altText || logo.name}
-                  style={{
-                    maxWidth: '90%',
-                    maxHeight: '50px',
-                    objectFit: 'contain',
-                  }}
-                  onError={(e) => {
-                    e.target.style.display = 'none';
-                    e.target.parentElement.innerHTML = `<span style="font-size: 1rem; font-weight: 600; color: #0f172a; text-align: center;">${logo.name}</span>`;
-                  }}
-                />
-              ) : (
-                <span style={{ fontSize: '1rem', fontWeight: 600, color: '#0f172a', textAlign: 'center' }}>
-                  {logo.name}
-                </span>
-              )}
-            </div>
-          ))}
-        </div>
-      </section>
-    );
-  };
 
   return (
     <div style={{ minHeight: '100vh', background: 'linear-gradient(180deg, #f8fbff 0%, #eef4ff 42%, #f8fafc 100%)', color: '#0f172a' }}>
@@ -209,8 +116,6 @@ const Portfolio = () => {
                 ))}
               </div>
             )}
-
-            {renderClientBrandSection()}
           </>
         )}
       </main>
