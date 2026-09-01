@@ -6,7 +6,6 @@ import SEOTags from '../Components/SEOTags.jsx';
 
 const Portfolio = () => {
   const [projects, setProjects] = useState([]);
-  const [clientLogos, setClientLogos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -16,25 +15,15 @@ const Portfolio = () => {
         setLoading(true);
         setError('');
 
-        const [projectsRes, clientLogosRes] = await Promise.all([
-          axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/api/public/projects`, {
-            params: { page: 'portfolio' },
-            withCredentials: true,
-          }),
-          axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/api/public/brand-assets`, {
-            params: { page: 'portfolio', type: 'client-logo' },
-            withCredentials: true,
-          }),
-        ]);
+        const projectsRes = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/api/public/projects`, {
+          params: { page: 'portfolio' },
+          withCredentials: true,
+        });
 
         if (projectsRes.data.success) {
           setProjects(projectsRes.data.data || []);
         } else {
           setError(projectsRes.data.message || 'Unable to load portfolio');
-        }
-
-        if (clientLogosRes.data.success) {
-          setClientLogos(clientLogosRes.data.data || []);
         }
       } catch (err) {
         setError(err.response?.data?.message || 'Unable to load portfolio');
@@ -45,132 +34,6 @@ const Portfolio = () => {
 
     fetchPortfolioData();
   }, []);
-
-  const renderClientBrandSection = () => {
-    // Database-driven only - completely hidden until Admin adds Brand Assets
-    // NO fallback data, NO empty state message - section simply does not render
-    const logosToShow = clientLogos.sort(
-      (a, b) => (a.sortOrder || 0) - (b.sortOrder || 0)
-    );
-
-    // Return null if no Brand Assets - section completely hidden
-    if (logosToShow.length === 0) {
-      return null;
-    }
-
-    return (
-      <section style={{
-        maxWidth: '1200px',
-        margin: '2.5rem auto 0',
-        background: '#f3f4f6',
-        border: '1px solid #e5e7eb',
-        borderRadius: '18px',
-        padding: '2rem 1.5rem',
-        boxShadow: '0 12px 32px rgba(15, 23, 42, 0.04)',
-        animation: 'fadeInUp 0.8s ease-out',
-      }}>
-        <style>{`
-          @keyframes fadeInUp {
-            from {
-              opacity: 0;
-              transform: translateY(20px);
-            }
-            to {
-              opacity: 1;
-              transform: translateY(0);
-            }
-          }
-          @keyframes scaleIn {
-            from {
-              opacity: 0;
-              transform: scale(0.95);
-            }
-            to {
-              opacity: 1;
-              transform: scale(1);
-            }
-          }
-          .client-logo-card {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-          }
-          .client-logo-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 16px 32px rgba(15, 23, 42, 0.12) !important;
-            border-color: #d1d5db !important;
-          }
-          .client-logo-card img {
-            transition: filter 0.3s ease, opacity 0.3s ease;
-          }
-          .client-logo-card:hover img {
-            filter: grayscale(0) brightness(1.05);
-            opacity: 1 !important;
-          }
-        `}</style>
-        <div style={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          textAlign: 'center',
-        }}>
-          <h2 style={{
-            margin: '0 0 1.5rem',
-            fontSize: 'clamp(2rem, 3vw, 3.2rem)',
-            fontWeight: 700,
-            letterSpacing: '-0.06em',
-            color: '#0f172a',
-          }}>
-            Some of our valuable clients
-          </h2>
-        </div>
-
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))',
-          gap: '1.1rem',
-          marginTop: '1rem',
-        }}>
-          {logosToShow.map((logo, index) => (
-            <div 
-              key={logo._id || index} 
-              className="client-logo-card"
-              style={{
-                background: '#fff',
-                border: '1px solid #e5e7eb',
-                borderRadius: '14px',
-                minHeight: '110px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                padding: '1rem',
-                boxShadow: '0 10px 22px rgba(15, 23, 42, 0.03)',
-                animation: `scaleIn 0.5s ease-out ${index * 0.05}s both`,
-              }}
-            >
-              {logo.imageUrl ? (
-                <img
-                  src={logo.imageUrl}
-                  alt={logo.altText || logo.name}
-                  style={{
-                    maxWidth: '90%',
-                    maxHeight: '52px',
-                    objectFit: 'contain',
-                    filter: 'grayscale(0)',
-                    opacity: 0.95,
-                  }}
-                  onError={(e) => {
-                    e.target.style.display = 'none';
-                    e.target.parentElement.innerHTML = `<span style="font-size: 1.5rem; font-weight: 700; color: #0f172a;">${logo.name}</span>`;
-                  }}
-                />
-              ) : (
-                <span style={{ fontSize: '1.5rem', fontWeight: 700, color: '#0f172a' }}>{logo.name}</span>
-              )}
-            </div>
-          ))}
-        </div>
-      </section>
-    );
-  };
 
   return (
     <div style={{ minHeight: '100vh', background: 'linear-gradient(180deg, #f8fbff 0%, #eef4ff 42%, #f8fafc 100%)', color: '#0f172a' }}>
@@ -197,8 +60,6 @@ const Portfolio = () => {
           <div style={{ marginTop: '2rem', color: '#b91c1c', fontWeight: 600 }}>{error}</div>
         ) : (
           <>
-            {renderClientBrandSection()}
-
             {projects.length > 0 && (
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem', marginTop: '2rem', alignItems: 'stretch' }}>
                 {projects.map((project) => (
