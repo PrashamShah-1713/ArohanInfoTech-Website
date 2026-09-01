@@ -5,6 +5,7 @@ const authMiddleware = require('../Middlewares/middleware');
 const { getAllInternships } = require('../controllers/internshipController');
 const { getAllProjects } = require('../controllers/ourWorkController');
 const { getAllTeamMembers } = require('../controllers/teamController');
+const { getAllBrandAssets } = require('../controllers/brandAssetController');
 const { sendInternshipEnrollmentEmail } = require('../utils/emailService');
 
 // Logging middleware
@@ -30,6 +31,11 @@ router.get('/projects', (req, res, next) => {
 router.get('/team', (req, res, next) => {
   req.query.isPublished = 'true';
   return getAllTeamMembers(req, res, next);
+});
+
+router.get('/brand-assets', (req, res, next) => {
+  req.query.isActive = 'true';
+  return getAllBrandAssets(req, res, next);
 });
 
 router.post('/internships/enroll', authMiddleware, async (req, res) => {

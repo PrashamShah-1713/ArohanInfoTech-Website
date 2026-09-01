@@ -5,6 +5,7 @@ const { getAllInternships, createInternship, updateInternship, deleteInternship 
 const { getAllProjects, createProject, updateProject, deleteProject } = require('../controllers/ourWorkController');
 const { getAllTeamMembers, createTeamMember, updateTeamMember, deleteTeamMember } = require('../controllers/teamController');
 const { getAllInterns, createIntern, updateIntern, deleteIntern } = require('../controllers/internsController');
+const { getAllBrandAssets, createBrandAsset, updateBrandAsset, deleteBrandAsset } = require('../controllers/brandAssetController');
 
 router.use(authMiddleware);
 router.use((req, res, next) => {
@@ -81,5 +82,10 @@ router.get('/interns', getAllInterns);
 router.post('/interns', createIntern);
 router.put('/interns/:id', updateIntern);
 router.delete('/interns/:id', deleteIntern);
+
+router.get('/brand-assets', getAllBrandAssets);
+router.post('/brand-assets', createBrandAsset);
+router.put('/brand-assets/:id', updateBrandAsset);
+router.delete('/brand-assets/:id', deleteBrandAsset);
 
 module.exports = router;

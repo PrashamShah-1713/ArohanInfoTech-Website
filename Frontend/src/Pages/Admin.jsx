@@ -52,16 +52,34 @@ const initialIntern = {
   isPublished: true,
 };
 
+const initialBrandAsset = {
+  name: '',
+  type: 'logo',
+  imageUrl: '',
+  altText: '',
+  link: '',
+  page: 'portfolio',
+  isActive: true,
+  sortOrder: 0,
+};
+
 const Admin = () => {
-  const context = useContext(AuthContext);
-  const { authToken: contextToken } = context || {};
-  const authToken = contextToken || (typeof window !== 'undefined' ? localStorage.getItem('authToken') : null);
-  
-  const [stats, setStats] = useState({ internships: 0, projects: 0, team: 0, interns: 0, internshipsThisMonth: 0, projectsThisMonth: 0, teamThisMonth: 0, internsThisMonth: 0 });
+  const { authToken } = useContext(AuthContext);
+  const [stats, setStats] = useState({
+    internships: 0,
+    interns: 0,
+    team: 0,
+    projects: 0,
+    internshipsThisMonth: 0,
+    internsThisMonth: 0,
+    teamThisMonth: 0,
+    projectsThisMonth: 0,
+  });
   const [internships, setInternships] = useState([]);
   const [projects, setProjects] = useState([]);
   const [team, setTeam] = useState([]);
   const [interns, setInterns] = useState([]);
+  const [brandAssets, setBrandAssets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [activeSection, setActiveSection] = useState('internships');
@@ -71,6 +89,8 @@ const Admin = () => {
   const [projectForm, setProjectForm] = useState(initialProject);
   const [teamForm, setTeamForm] = useState(initialTeamMember);
   const [internForm, setInternForm] = useState(initialIntern);
+  const [brandAssetForm, setBrandAssetForm] = useState(initialBrandAsset);
+  const [brandAssetMode, setBrandAssetMode] = useState({ type: null, id: null });
   const [notification, setNotification] = useState({ message: '', type: 'info' });
   const [confirmDelete, setConfirmDelete] = useState({ open: false, type: null, id: null });
 
@@ -89,6 +109,7 @@ const Admin = () => {
       students: { title: 'Student Management', subtitle: 'Manage students and interns.' },
       portfolio: { title: 'Portfolio Management', subtitle: 'Manage work and client projects.' },
       team: { title: 'Team Management', subtitle: 'Manage team members and profiles.' },
+      'brand-assets': { title: 'Brand Assets', subtitle: 'Update company logos, brands and client asset previews.' },
     }),
     []
   );
@@ -101,12 +122,13 @@ const Admin = () => {
       const query = nextStatus && nextStatus !== 'all' ? `?status=${nextStatus}` : '';
       const headers = getHeaders();
 
-      const [overviewRes, internshipsRes, projectsRes, teamRes, internsRes] = await Promise.all([
+      const [overviewRes, internshipsRes, projectsRes, teamRes, internsRes, brandAssetsRes] = await Promise.all([
         axios.get(`${API}/admin/overview`, headers),
         axios.get(`${API}/admin/internships${query}`, headers),
         axios.get(`${API}/admin/projects`, headers),
         axios.get(`${API}/admin/team`, headers),
         axios.get(`${API}/admin/interns${query}`, headers),
+        axios.get(`${API}/admin/brand-assets`, headers),
       ]);
 
       if (overviewRes.data.success) {
@@ -117,6 +139,7 @@ const Admin = () => {
       setProjects(projectsRes.data.data || []);
       setTeam(teamRes.data.data || []);
       setInterns(internsRes.data.data || []);
+      setBrandAssets(brandAssetsRes.data.data || []);
     } catch (err) {
       setError(err.response?.data?.message || 'Unable to load admin data');
     } finally {
@@ -134,6 +157,8 @@ const Admin = () => {
     setProjectForm(initialProject);
     setTeamForm(initialTeamMember);
     setInternForm(initialIntern);
+    setBrandAssetForm(initialBrandAsset);
+    setBrandAssetMode({ type: null, id: null });
   };
 
   const handleCreateOrUpdate = async (type) => {
@@ -170,6 +195,13 @@ const Admin = () => {
         if (formMode.type === 'intern' && formMode.id) url = `${url}/${formMode.id}`;
       }
 
+      if (type === 'brand-asset') {
+        payload = brandAssetForm;
+        url = `${API}/admin/brand-assets`;
+        method = brandAssetMode.type === 'brand-asset' && brandAssetMode.id ? 'put' : 'post';
+        if (brandAssetMode.type === 'brand-asset' && brandAssetMode.id) url = `${url}/${brandAssetMode.id}`;
+      }
+
       const response = await axios({
         method,
         url,
@@ -194,6 +226,7 @@ const Admin = () => {
       if (type === 'project') url = `${API}/admin/projects/${id}`;
       if (type === 'team') url = `${API}/admin/team/${id}`;
       if (type === 'intern') url = `${API}/admin/interns/${id}`;
+      if (type === 'brand-asset') url = `${API}/admin/brand-assets/${id}`;
 
       const response = await axios.delete(url, getHeaders());
       if (response.data.success) {
@@ -207,6 +240,21 @@ const Admin = () => {
 
   const requestDelete = (type, id) => {
     setConfirmDelete({ open: true, type, id });
+  };
+
+  const openBrandAssetEdit = (item) => {
+    setActiveSection('brand-assets');
+    setBrandAssetMode({ type: 'brand-asset', id: item._id });
+    setBrandAssetForm({
+      name: item.name,
+      type: item.type || 'logo',
+      imageUrl: item.imageUrl,
+      altText: item.altText || '',
+      link: item.link || '',
+      page: item.page || 'portfolio',
+      isActive: item.isActive !== undefined ? item.isActive : true,
+      sortOrder: item.sortOrder || 0,
+    });
   };
 
   const openEdit = (type, item) => {
@@ -349,6 +397,79 @@ const Admin = () => {
       );
     }
 
+    if (activeSection === 'brand-assets') {
+      return (
+        <div className={styles.formCard}>
+          <div className={styles.formHeader}>
+            <h3>{brandAssetMode.type === 'brand-asset' ? 'Edit Brand Asset' : 'Add Brand Asset'}</h3>
+          </div>
+
+          <div className={styles.formGrid}>
+            <input
+              value={brandAssetForm.name}
+              onChange={(e) => setBrandAssetForm({ ...brandAssetForm, name: e.target.value })}
+              placeholder="Asset name"
+            />
+            <select value={brandAssetForm.type} onChange={(e) => setBrandAssetForm({ ...brandAssetForm, type: e.target.value })}>
+              <option value="logo">Logo</option>
+              <option value="icon">Icon</option>
+              <option value="banner">Banner</option>
+              <option value="client-logo">Client Logo</option>
+              <option value="gallery">Gallery</option>
+            </select>
+            <input
+              value={brandAssetForm.imageUrl}
+              onChange={(e) => setBrandAssetForm({ ...brandAssetForm, imageUrl: e.target.value })}
+              placeholder="Image URL or upload path"
+              className={styles.fullWidth}
+            />
+            <input
+              value={brandAssetForm.altText}
+              onChange={(e) => setBrandAssetForm({ ...brandAssetForm, altText: e.target.value })}
+              placeholder="Alt text"
+            />
+            <input
+              value={brandAssetForm.link}
+              onChange={(e) => setBrandAssetForm({ ...brandAssetForm, link: e.target.value })}
+              placeholder="External link (optional)"
+            />
+            <input
+              type="number"
+              value={brandAssetForm.sortOrder}
+              onChange={(e) => setBrandAssetForm({ ...brandAssetForm, sortOrder: Number(e.target.value) || 0 })}
+              placeholder="Sort order"
+            />
+            <select value={brandAssetForm.page} onChange={(e) => setBrandAssetForm({ ...brandAssetForm, page: e.target.value })}>
+              <option value="portfolio">Portfolio</option>
+              <option value="company">Company</option>
+              <option value="home">Home</option>
+              <option value="all">All</option>
+            </select>
+            <select value={brandAssetForm.isActive ? 'true' : 'false'} onChange={(e) => setBrandAssetForm({ ...brandAssetForm, isActive: e.target.value === 'true' })}>
+              <option value="true">Active</option>
+              <option value="false">Inactive</option>
+            </select>
+          </div>
+
+          <div className={styles.previewBox} style={{ marginTop: '1rem' }}>
+            {brandAssetForm.imageUrl ? (
+              <>
+                <img src={brandAssetForm.imageUrl} alt={brandAssetForm.altText || brandAssetForm.name || 'Preview'} style={{ maxWidth: '220px', maxHeight: '120px', objectFit: 'contain', borderRadius: '12px', background: '#f8fafc', padding: '10px' }} />
+                <div style={{ marginTop: '0.75rem', fontSize: '0.9rem', color: '#475569' }}>{brandAssetForm.name || 'Preview asset'} • {brandAssetForm.type}</div>
+              </>
+            ) : (
+              <div style={{ color: '#64748b' }}>Add an image URL to preview the asset.</div>
+            )}
+          </div>
+
+          <div className={styles.formActions}>
+            <button className={styles.successButton} onClick={() => handleCreateOrUpdate('brand-asset')}>{brandAssetMode.type === 'brand-asset' ? 'Update Asset' : 'Add Asset'}</button>
+            {(brandAssetMode.type || brandAssetForm.imageUrl) && <button className={styles.secondaryButton} onClick={() => { resetForms(); setActiveSection('brand-assets'); }}>Cancel</button>}
+          </div>
+        </div>
+      );
+    }
+
     return (
       <div className={styles.formCard}>
         <div className={styles.formHeader}><h3>{formMode.type === 'intern' ? 'Edit Intern' : 'Add Intern'}</h3></div>
@@ -465,6 +586,42 @@ const Admin = () => {
       );
     }
 
+    if (activeSection === 'brand-assets') {
+      return (
+        <div className={styles.listTableWrapper}>
+          <table className={styles.dataTable}>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Page</th>
+                <th>Preview</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {brandAssets.length ? brandAssets.map((item) => (
+                <tr key={item._id}>
+                  <td>{item.name}</td>
+                  <td>{item.type}</td>
+                  <td>{item.page}</td>
+                  <td>
+                    {item.imageUrl ? (
+                      <img src={item.imageUrl} alt={item.altText || item.name} style={{ width: '72px', height: '48px', objectFit: 'contain', borderRadius: '8px', background: '#f8fafc', padding: '4px' }} />
+                    ) : '—'}
+                  </td>
+                  <td className={styles.actionCell}>
+                    <button className={styles.tableEdit} onClick={() => openBrandAssetEdit(item)}>Edit</button>
+                    <button className={styles.tableDelete} onClick={() => requestDelete('brand-asset', item._id)}>Delete</button>
+                  </td>
+                </tr>
+              )) : <tr><td colSpan="5" className={styles.emptyState}>No brand assets found.</td></tr>}
+            </tbody>
+          </table>
+        </div>
+      );
+    }
+
     return (
       <div className={styles.listTableWrapper}>
         <table className={styles.dataTable}>
@@ -559,6 +716,7 @@ const Admin = () => {
               <button type="button" className={activeSection === 'students' ? styles.selectedTab : ''} onClick={() => setActiveSection('students')}>Students</button>
               <button type="button" className={activeSection === 'portfolio' ? styles.selectedTab : ''} onClick={() => setActiveSection('portfolio')}>Portfolio</button>
               <button type="button" className={activeSection === 'team' ? styles.selectedTab : ''} onClick={() => setActiveSection('team')}>Team</button>
+              <button type="button" className={activeSection === 'brand-assets' ? styles.selectedTab : ''} onClick={() => setActiveSection('brand-assets')}>Brand Assets</button>
             </div>
 
             <div className={styles.filterRow}>
