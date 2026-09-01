@@ -47,10 +47,16 @@ const Portfolio = () => {
   }, []);
 
   const renderClientBrandSection = () => {
-    // Sort by display order - database-driven only, no hardcoded fallbacks
+    // Database-driven only - completely hidden until Admin adds Brand Assets
+    // NO fallback data, NO empty state message - section simply does not render
     const logosToShow = clientLogos.sort(
       (a, b) => (a.sortOrder || 0) - (b.sortOrder || 0)
     );
+
+    // Return null if no Brand Assets - section completely hidden
+    if (logosToShow.length === 0) {
+      return null;
+    }
 
     return (
       <section style={{
@@ -117,66 +123,51 @@ const Portfolio = () => {
           </h2>
         </div>
 
-        {logosToShow.length === 0 ? (
-          <div style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            minHeight: '200px',
-            color: '#64748b',
-            fontSize: '1.1rem',
-            fontWeight: 500,
-            textAlign: 'center',
-          }}>
-            Our client showcase is being updated.
-          </div>
-        ) : (
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))',
-            gap: '1.1rem',
-            marginTop: '1rem',
-          }}>
-            {logosToShow.map((logo, index) => (
-              <div 
-                key={logo._id || index} 
-                className="client-logo-card"
-                style={{
-                  background: '#fff',
-                  border: '1px solid #e5e7eb',
-                  borderRadius: '14px',
-                  minHeight: '110px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  padding: '1rem',
-                  boxShadow: '0 10px 22px rgba(15, 23, 42, 0.03)',
-                  animation: `scaleIn 0.5s ease-out ${index * 0.05}s both`,
-                }}
-              >
-                {logo.imageUrl ? (
-                  <img
-                    src={logo.imageUrl}
-                    alt={logo.altText || logo.name}
-                    style={{
-                      maxWidth: '90%',
-                      maxHeight: '52px',
-                      objectFit: 'contain',
-                      filter: 'grayscale(0)',
-                      opacity: 0.95,
-                    }}
-                    onError={(e) => {
-                      e.target.style.display = 'none';
-                      e.target.parentElement.innerHTML = `<span style="font-size: 1.5rem; font-weight: 700; color: #0f172a;">${logo.name}</span>`;
-                    }}
-                  />
-                ) : (
-                  <span style={{ fontSize: '1.5rem', fontWeight: 700, color: '#0f172a' }}>{logo.name}</span>
-                )}
-              </div>
-            ))}
-          </div>
-        )}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))',
+          gap: '1.1rem',
+          marginTop: '1rem',
+        }}>
+          {logosToShow.map((logo, index) => (
+            <div 
+              key={logo._id || index} 
+              className="client-logo-card"
+              style={{
+                background: '#fff',
+                border: '1px solid #e5e7eb',
+                borderRadius: '14px',
+                minHeight: '110px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: '1rem',
+                boxShadow: '0 10px 22px rgba(15, 23, 42, 0.03)',
+                animation: `scaleIn 0.5s ease-out ${index * 0.05}s both`,
+              }}
+            >
+              {logo.imageUrl ? (
+                <img
+                  src={logo.imageUrl}
+                  alt={logo.altText || logo.name}
+                  style={{
+                    maxWidth: '90%',
+                    maxHeight: '52px',
+                    objectFit: 'contain',
+                    filter: 'grayscale(0)',
+                    opacity: 0.95,
+                  }}
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                    e.target.parentElement.innerHTML = `<span style="font-size: 1.5rem; font-weight: 700; color: #0f172a;">${logo.name}</span>`;
+                  }}
+                />
+              ) : (
+                <span style={{ fontSize: '1.5rem', fontWeight: 700, color: '#0f172a' }}>{logo.name}</span>
+              )}
+            </div>
+          ))}
+        </div>
       </section>
     );
   };
