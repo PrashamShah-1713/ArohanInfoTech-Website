@@ -84,6 +84,9 @@ const Admin = () => {
   const [error, setError] = useState('');
   const [activeSection, setActiveSection] = useState('internships');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [brandAssetSearch, setBrandAssetSearch] = useState('');
+  const [brandAssetTypeFilter, setBrandAssetTypeFilter] = useState('all');
+  const [brandAssetStatusFilter, setBrandAssetStatusFilter] = useState('all');
   const [formMode, setFormMode] = useState({ type: null, id: null });
   const [internshipForm, setInternshipForm] = useState(initialInternship);
   const [projectForm, setProjectForm] = useState(initialProject);
@@ -159,6 +162,9 @@ const Admin = () => {
     setInternForm(initialIntern);
     setBrandAssetForm(initialBrandAsset);
     setBrandAssetMode({ type: null, id: null });
+    setBrandAssetSearch('');
+    setBrandAssetTypeFilter('all');
+    setBrandAssetStatusFilter('all');
   };
 
   const handleCreateOrUpdate = async (type) => {
@@ -313,6 +319,15 @@ const Admin = () => {
         isPublished: item.isPublished !== undefined ? item.isPublished : true,
       });
     }
+  };
+
+  const getFilteredBrandAssets = () => {
+    return brandAssets.filter((asset) => {
+      const matchesSearch = asset.name.toLowerCase().includes(brandAssetSearch.toLowerCase());
+      const matchesType = brandAssetTypeFilter === 'all' || asset.type === brandAssetTypeFilter;
+      const matchesStatus = brandAssetStatusFilter === 'all' || (brandAssetStatusFilter === 'active' ? asset.isActive : !asset.isActive);
+      return matchesSearch && matchesType && matchesStatus;
+    });
   };
 
   const renderForm = () => {
@@ -587,24 +602,88 @@ const Admin = () => {
     }
 
     if (activeSection === 'brand-assets') {
+      const filteredAssets = getFilteredBrandAssets();
       return (
         <div className={styles.listTableWrapper}>
+          <div style={{ marginBottom: '1.5rem', display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'center' }}>
+            <input
+              type="text"
+              placeholder="Search client name..."
+              value={brandAssetSearch}
+              onChange={(e) => setBrandAssetSearch(e.target.value)}
+              style={{
+                padding: '0.6rem 1rem',
+                borderRadius: '8px',
+                border: '1px solid #cbd5e1',
+                fontSize: '0.95rem',
+                flex: '1',
+                minWidth: '200px',
+              }}
+            />
+            <select
+              value={brandAssetTypeFilter}
+              onChange={(e) => setBrandAssetTypeFilter(e.target.value)}
+              style={{
+                padding: '0.6rem 1rem',
+                borderRadius: '8px',
+                border: '1px solid #cbd5e1',
+                fontSize: '0.95rem',
+                minWidth: '140px',
+              }}
+            >
+              <option value="all">All Types</option>
+              <option value="client-logo">Client Logo</option>
+              <option value="logo">Logo</option>
+              <option value="icon">Icon</option>
+              <option value="banner">Banner</option>
+              <option value="gallery">Gallery</option>
+            </select>
+            <select
+              value={brandAssetStatusFilter}
+              onChange={(e) => setBrandAssetStatusFilter(e.target.value)}
+              style={{
+                padding: '0.6rem 1rem',
+                borderRadius: '8px',
+                border: '1px solid #cbd5e1',
+                fontSize: '0.95rem',
+                minWidth: '140px',
+              }}
+            >
+              <option value="all">All Status</option>
+              <option value="active">Active</option>
+              <option value="inactive">Inactive</option>
+            </select>
+          </div>
           <table className={styles.dataTable}>
             <thead>
               <tr>
                 <th>Name</th>
                 <th>Type</th>
                 <th>Page</th>
+                <th>Status</th>
                 <th>Preview</th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody>
-              {brandAssets.length ? brandAssets.map((item) => (
+              {filteredAssets.length ? filteredAssets.map((item) => (
                 <tr key={item._id}>
                   <td>{item.name}</td>
                   <td>{item.type}</td>
                   <td>{item.page}</td>
+                  <td>
+                    <span style={{
+                      display: 'inline-block',
+                      padding: '0.35rem 0.8rem',
+                      borderRadius: '6px',
+                      fontSize: '0.85rem',
+                      fontWeight: 600,
+                      background: item.isActive ? '#dcfce7' : '#fee2e2',
+                      color: item.isActive ? '#166534' : '#991b1b',
+                    }}>
+                      {item.isActive ? 'Active' : 'Inactive'}
+                    </span>
+                  </td>
                   <td>
                     {item.imageUrl ? (
                       <img src={item.imageUrl} alt={item.altText || item.name} style={{ width: '72px', height: '48px', objectFit: 'contain', borderRadius: '8px', background: '#f8fafc', padding: '4px' }} />
@@ -615,9 +694,12 @@ const Admin = () => {
                     <button className={styles.tableDelete} onClick={() => requestDelete('brand-asset', item._id)}>Delete</button>
                   </td>
                 </tr>
-              )) : <tr><td colSpan="5" className={styles.emptyState}>No brand assets found.</td></tr>}
+              )) : <tr><td colSpan="6" className={styles.emptyState}>No brand assets found matching your filters.</td></tr>}
             </tbody>
           </table>
+          <div style={{ marginTop: '1rem', fontSize: '0.9rem', color: '#64748b' }}>
+            Showing {filteredAssets.length} of {brandAssets.length} clients
+          </div>
         </div>
       );
     }

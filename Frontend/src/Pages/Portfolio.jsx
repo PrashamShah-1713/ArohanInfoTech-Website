@@ -76,7 +76,45 @@ const Portfolio = () => {
         borderRadius: '18px',
         padding: '2rem 1.5rem',
         boxShadow: '0 12px 32px rgba(15, 23, 42, 0.04)',
+        animation: 'fadeInUp 0.8s ease-out',
       }}>
+        <style>{`
+          @keyframes fadeInUp {
+            from {
+              opacity: 0;
+              transform: translateY(20px);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
+          @keyframes scaleIn {
+            from {
+              opacity: 0;
+              transform: scale(0.95);
+            }
+            to {
+              opacity: 1;
+              transform: scale(1);
+            }
+          }
+          .client-logo-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          }
+          .client-logo-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 16px 32px rgba(15, 23, 42, 0.12) !important;
+            border-color: #d1d5db !important;
+          }
+          .client-logo-card img {
+            transition: filter 0.3s ease, opacity 0.3s ease;
+          }
+          .client-logo-card:hover img {
+            filter: grayscale(0) brightness(1.05);
+            opacity: 1 !important;
+          }
+        `}</style>
         <div style={{
           display: 'flex',
           justifyContent: 'center',
@@ -101,17 +139,22 @@ const Portfolio = () => {
           marginTop: '1rem',
         }}>
           {logosToShow.map((logo, index) => (
-            <div key={logo._id || index} style={{
-              background: '#fff',
-              border: '1px solid #e5e7eb',
-              borderRadius: '14px',
-              minHeight: '110px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              padding: '1rem',
-              boxShadow: '0 10px 22px rgba(15, 23, 42, 0.03)',
-            }}>
+            <div 
+              key={logo._id || index} 
+              className="client-logo-card"
+              style={{
+                background: '#fff',
+                border: '1px solid #e5e7eb',
+                borderRadius: '14px',
+                minHeight: '110px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: '1rem',
+                boxShadow: '0 10px 22px rgba(15, 23, 42, 0.03)',
+                animation: `scaleIn 0.5s ease-out ${index * 0.05}s both`,
+              }}
+            >
               {logo.imageUrl ? (
                 <img
                   src={logo.imageUrl}
@@ -122,6 +165,10 @@ const Portfolio = () => {
                     objectFit: 'contain',
                     filter: 'grayscale(0)',
                     opacity: 0.95,
+                  }}
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                    e.target.parentElement.innerHTML = `<span style="font-size: 1.5rem; font-weight: 700; color: #0f172a;">${logo.name}</span>`;
                   }}
                 />
               ) : (
@@ -161,11 +208,7 @@ const Portfolio = () => {
           <>
             {renderClientBrandSection()}
 
-            {projects.length === 0 ? (
-              <div style={{ marginTop: '2rem', padding: '2rem', borderRadius: '16px', background: '#fff', boxShadow: '0 10px 25px rgba(15, 23, 42, 0.06)' }}>
-                No portfolio items available yet.
-              </div>
-            ) : (
+            {projects.length > 0 && (
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem', marginTop: '2rem', alignItems: 'stretch' }}>
                 {projects.map((project) => (
                   <article
