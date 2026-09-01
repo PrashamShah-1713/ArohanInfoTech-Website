@@ -47,19 +47,25 @@ const Portfolio = () => {
   }, []);
 
   const renderClientBrandSection = () => {
-    const logosToShow = clientLogos.length > 0 ? clientLogos : [
-      { _id: 'google', name: 'Google Fonts', imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg', altText: 'Google Fonts' },
-      { _id: 'amazon', name: 'amazon', imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg', altText: 'Amazon' },
-      { _id: 'microsoft', name: 'Microsoft', imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg', altText: 'Microsoft' },
-      { _id: 'helpscout', name: 'HelpScout', imageUrl: 'https://help.com/wp-content/themes/HelpScout/images/logo.svg', altText: 'HelpScout' },
-      { _id: 'optimizely', name: 'Optimizely', imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/0/00/Optimizely_logo.svg', altText: 'Optimizely' },
-      { _id: 'breezy', name: 'breezy', imageUrl: 'https://www.breezy.hr/images/breezy-logo.svg', altText: 'Breezy' },
-      { _id: 'attio', name: 'Attio', imageUrl: 'https://www.attio.com/_next/static/media/logo.4e57f0dc.svg', altText: 'Attio' },
-      { _id: 'paypal', name: 'PayPal', imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/3/39/PayPal_logo.svg', altText: 'PayPal' },
-      { _id: 'particle', name: 'particle', imageUrl: 'https://www.particle.io/static/particle-logo.svg', altText: 'Particle' },
-      { _id: 'hubspot', name: 'HubSpot', imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/6/65/HubSpot_Logo.svg', altText: 'HubSpot' },
-      { _id: 'miro', name: 'miro', imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/b/bf/Miro_Logo.svg', altText: 'Miro' },
+    // Fallback client logos if no data from API
+    const defaultFallbackClients = [
+      { _id: 'google', name: 'Google Fonts', imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg', altText: 'Google Fonts', sortOrder: 1 },
+      { _id: 'amazon', name: 'amazon', imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg', altText: 'Amazon', sortOrder: 2 },
+      { _id: 'microsoft', name: 'Microsoft', imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg', altText: 'Microsoft', sortOrder: 3 },
+      { _id: 'helpscout', name: 'HelpScout', imageUrl: 'https://help.com/wp-content/themes/HelpScout/images/logo.svg', altText: 'HelpScout', sortOrder: 4 },
+      { _id: 'optimizely', name: 'Optimizely', imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/0/00/Optimizely_logo.svg', altText: 'Optimizely', sortOrder: 5 },
+      { _id: 'breezy', name: 'breezy', imageUrl: 'https://www.breezy.hr/images/breezy-logo.svg', altText: 'Breezy', sortOrder: 6 },
+      { _id: 'attio', name: 'Attio', imageUrl: 'https://www.attio.com/_next/static/media/logo.4e57f0dc.svg', altText: 'Attio', sortOrder: 7 },
+      { _id: 'paypal', name: 'PayPal', imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/3/39/PayPal_logo.svg', altText: 'PayPal', sortOrder: 8 },
+      { _id: 'particle', name: 'particle', imageUrl: 'https://www.particle.io/static/particle-logo.svg', altText: 'Particle', sortOrder: 9 },
+      { _id: 'hubspot', name: 'HubSpot', imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/6/65/HubSpot_Logo.svg', altText: 'HubSpot', sortOrder: 10 },
+      { _id: 'miro', name: 'miro', imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/b/bf/Miro_Logo.svg', altText: 'Miro', sortOrder: 11 },
     ];
+
+    // Use API data if available, otherwise use fallback
+    const logosToShow = (clientLogos.length > 0 ? clientLogos : defaultFallbackClients).sort(
+      (a, b) => (a.sortOrder || 0) - (b.sortOrder || 0)
+    );
 
     return (
       <section style={{
