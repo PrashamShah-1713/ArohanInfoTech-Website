@@ -25,8 +25,6 @@ const initialInternship = {
 const initialProject = {
   projectname: '',
   projectimage: '',
-  projectdescription: '',
-  projectlink: '',
   page: 'portfolio',
   isPublished: true,
 };
@@ -238,8 +236,6 @@ const Admin = () => {
       setProjectForm({
         projectname: item.projectname,
         projectimage: item.projectimage,
-        projectdescription: item.projectdescription,
-        projectlink: item.projectlink,
         page: item.page || 'portfolio',
         isPublished: item.isPublished !== undefined ? item.isPublished : true,
       });
@@ -313,15 +309,18 @@ const Admin = () => {
         <div className={styles.formCard}>
           <div className={styles.formHeader}><h3>{formMode.type === 'project' ? 'Edit Project' : 'Add Project'}</h3></div>
           <div className={styles.formGrid}>
-            <input value={projectForm.projectname} onChange={(e) => setProjectForm({ ...projectForm, projectname: e.target.value })} placeholder="Project name" />
-            <input value={projectForm.projectlink} onChange={(e) => setProjectForm({ ...projectForm, projectlink: e.target.value })} placeholder="Project link" />
-            <input value={projectForm.projectimage} onChange={(e) => setProjectForm({ ...projectForm, projectimage: e.target.value })} placeholder="Project image URL" className={styles.fullWidth} />
-            <select value={projectForm.page} onChange={(e) => setProjectForm({ ...projectForm, page: e.target.value })}>
-              <option value="portfolio">Portfolio</option>
-              <option value="home">Home</option>
-              <option value="all">All</option>
-            </select>
-            <textarea value={projectForm.projectdescription} onChange={(e) => setProjectForm({ ...projectForm, projectdescription: e.target.value })} placeholder="Project description" rows="4" className={styles.fullWidth} />
+            <input
+              value={projectForm.projectname}
+              onChange={(e) => setProjectForm({ ...projectForm, projectname: e.target.value })}
+              placeholder="Project name / Client brand name"
+              className={styles.fullWidth}
+            />
+            <input
+              value={projectForm.projectimage}
+              onChange={(e) => setProjectForm({ ...projectForm, projectimage: e.target.value })}
+              placeholder="Project image URL"
+              className={styles.fullWidth}
+            />
           </div>
           <div className={styles.formActions}>
             <button className={styles.successButton} onClick={() => handleCreateOrUpdate('project')}>{formMode.type === 'project' ? 'Update Project' : 'Add Project'}</button>
@@ -420,7 +419,7 @@ const Admin = () => {
             <thead>
               <tr>
                 <th>Project</th>
-                <th>Link</th>
+                <th>Image</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -428,7 +427,7 @@ const Admin = () => {
               {projects.length ? projects.map((item) => (
                 <tr key={item._id}>
                   <td>{item.projectname}</td>
-                  <td>{item.projectlink}</td>
+                  <td>{item.projectimage ? 'Added' : 'Missing'}</td>
                   <td className={styles.actionCell}>
                     <button className={styles.tableEdit} onClick={() => openEdit('project', item)}>Edit</button>
                     <button className={styles.tableDelete} onClick={() => requestDelete('project', item._id)}>Delete</button>

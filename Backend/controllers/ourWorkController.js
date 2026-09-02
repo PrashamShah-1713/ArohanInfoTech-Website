@@ -27,16 +27,16 @@ async function getProjectById(req, res) {
 
 async function createProject(req, res) {
   try {
-    const { projectname, projectimage, projectdescription, projectlink, page, isPublished } = req.body;
-    if (!projectname || !projectimage || !projectdescription || !projectlink) {
-      return res.status(400).json({ success: false, message: 'All product fields are required' });
+    const { projectname, projectimage, page, isPublished } = req.body;
+    if (!projectname || !projectimage) {
+      return res.status(400).json({ success: false, message: 'Project name and image are required' });
     }
 
     const project = await OurProjects.create({
       projectname,
       projectimage,
-      projectdescription,
-      projectlink,
+      projectdescription: req.body.projectdescription || '',
+      projectlink: req.body.projectlink || '',
       page: page || 'portfolio',
       isPublished: isPublished !== undefined ? Boolean(isPublished) : true,
     });

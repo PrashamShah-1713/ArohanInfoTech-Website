@@ -14,12 +14,12 @@ const OurProjectsSchema = new mongoose.Schema({
 
     projectdescription: {
         type: String,
-        required: true,
+        default: '',
     },
 
     projectlink: {
         type: String,
-        required: true,
+        default: '',
     },
 
     page: {

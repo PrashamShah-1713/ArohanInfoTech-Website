@@ -61,56 +61,40 @@ const Portfolio = () => {
         ) : (
           <>
             {projects.length > 0 && (
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem', marginTop: '2rem', alignItems: 'stretch' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1.5rem', marginTop: '2rem', alignItems: 'stretch' }}>
                 {projects.map((project) => (
                   <article
                     key={project._id}
                     style={{
-                      background: '#fff',
+                      background: '#ffffff',
                       borderRadius: '22px',
                       overflow: 'hidden',
-                      boxShadow: '0 12px 28px rgba(15, 23, 42, 0.06)',
+                      boxShadow: '0 12px 28px rgba(15, 23, 42, 0.08)',
                       border: '1px solid #e2e8f0',
                       width: '100%',
                       maxWidth: '360px',
-                      minHeight: '430px',
+                      minHeight: '360px',
                       display: 'flex',
                       flexDirection: 'column',
                       margin: projects.length === 1 ? '0 auto' : '0',
                     }}
                   >
-                    {project.projectimage && (
+                    {project.projectimage ? (
                       <img
                         src={project.projectimage}
                         alt={project.projectname}
-                        style={{ width: '100%', height: '210px', objectFit: 'cover', display: 'block' }}
+                        style={{ width: '100%', height: '240px', objectFit: 'cover', display: 'block' }}
                       />
+                    ) : (
+                      <div style={{ height: '240px', background: 'linear-gradient(135deg, #dbeafe, #eff6ff)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#2563eb', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase' }}>
+                        {project.projectname || 'Project'}
+                      </div>
                     )}
 
-                    <div style={{ padding: '1.25rem', display: 'flex', flexDirection: 'column', flex: 1 }}>
-                      <h3 style={{ margin: '0 0 0.65rem', fontSize: '1.35rem', color: '#0f172a' }}>{project.projectname}</h3>
-                      <p style={{ margin: '0 0 1rem', color: '#475569', lineHeight: 1.7, flex: 1 }}>{project.projectdescription}</p>
-
-                      {project.projectlink && (
-                        <a
-                          href={project.projectlink}
-                          target="_blank"
-                          rel="noreferrer"
-                          style={{
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            background: 'linear-gradient(135deg, #2563eb, #1d4ed8)',
-                            color: '#fff',
-                            borderRadius: '12px',
-                            padding: '0.8rem 1rem',
-                            textDecoration: 'none',
-                            fontWeight: 700,
-                          }}
-                        >
-                          View Project
-                        </a>
-                      )}
+                    <div style={{ padding: '1.2rem 1.1rem 1.35rem', display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 1 }}>
+                      <h3 style={{ margin: 0, fontSize: '1.2rem', color: '#0f172a', textAlign: 'center', lineHeight: 1.5 }}>
+                        {project.projectname}
+                      </h3>
                     </div>
                   </article>
                 ))}
