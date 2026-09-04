@@ -1,10 +1,33 @@
 const express = require('express');
+const fs = require('fs');
+const path = require('path');
+const multer = require('multer');
 const router = express.Router();
 const authMiddleware = require('../Middlewares/middleware');
 const { getAllInternships, createInternship, updateInternship, deleteInternship } = require('../controllers/internshipController');
 const { getAllProjects, createProject, updateProject, deleteProject } = require('../controllers/ourWorkController');
 const { getAllTeamMembers, createTeamMember, updateTeamMember, deleteTeamMember } = require('../controllers/teamController');
 const { getAllInterns, createIntern, updateIntern, deleteIntern } = require('../controllers/internsController');
+
+const imageStorage = multer.diskStorage({
+  destination: (req, file, callback) => {
+    const uploadDirectory = path.join(__dirname, '..', 'uploads', 'projects');
+    fs.mkdirSync(uploadDirectory, { recursive: true });
+    callback(null, uploadDirectory);
+  },
+  filename: (req, file, callback) => {
+    const extension = path.extname(file.originalname).toLowerCase();
+    callback(null, `project-${Date.now()}-${Math.round(Math.random() * 1e9)}${extension}`);
+  },
+});
+
+const uploadProjectImage = multer({
+  storage: imageStorage,
+  limits: { fileSize: 5 * 1024 * 1024 },
+  fileFilter: (req, file, callback) => {
+    callback(null, /^image\/(jpeg|png|gif|webp|svg\+xml)$/.test(file.mimetype));
+  },
+});
 
 router.use(authMiddleware);
 router.use((req, res, next) => {
@@ -68,6 +91,14 @@ router.put('/internships/:id', updateInternship);
 router.delete('/internships/:id', deleteInternship);
 
 router.get('/projects', getAllProjects);
+router.post('/projects/upload-image', uploadProjectImage.single('image'), (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ success: false, message: 'Please choose a valid image (JPEG, PNG, GIF, WEBP, or SVG)' });
+  }
+
+  const imagePath = `/uploads/projects/${req.file.filename}`;
+  res.status(201).json({ success: true, data: { url: `${req.protocol}://${req.get('host')}${imagePath}` } });
+});
 router.post('/projects', createProject);
 router.put('/projects/:id', updateProject);
 router.delete('/projects/:id', deleteProject);

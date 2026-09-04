@@ -27,7 +27,18 @@ async function getProjectById(req, res) {
 
 async function createProject(req, res) {
   try {
-    const { projectname, projectimage, page, isPublished } = req.body;
+    const {
+      projectname,
+      projectimage,
+      projectnameColor,
+      projectnameFontFamily,
+      projectnameFontSize,
+      projectnameBold,
+      projectnameItalic,
+      projectnameUnderline,
+      page,
+      isPublished,
+    } = req.body;
     if (!projectname || !projectimage) {
       return res.status(400).json({ success: false, message: 'Project name and image are required' });
     }
@@ -35,6 +46,12 @@ async function createProject(req, res) {
     const project = await OurProjects.create({
       projectname,
       projectimage,
+      projectnameColor: projectnameColor || '#0f172a',
+      projectnameFontFamily: projectnameFontFamily || 'Arial',
+      projectnameFontSize: Number(projectnameFontSize) || 1.2,
+      projectnameBold: projectnameBold === true || projectnameBold === 'true',
+      projectnameItalic: projectnameItalic === true || projectnameItalic === 'true',
+      projectnameUnderline: projectnameUnderline === true || projectnameUnderline === 'true',
       projectdescription: req.body.projectdescription || '',
       projectlink: req.body.projectlink || '',
       page: page || 'portfolio',

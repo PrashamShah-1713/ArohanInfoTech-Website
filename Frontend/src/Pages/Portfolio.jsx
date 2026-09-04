@@ -92,7 +92,17 @@ const Portfolio = () => {
                     )}
 
                     <div style={{ padding: '1.2rem 1.1rem 1.35rem', display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 1 }}>
-                      <h3 style={{ margin: 0, fontSize: '1.2rem', color: '#0f172a', textAlign: 'center', lineHeight: 1.5 }}>
+                      <h3 style={{
+                        margin: 0,
+                        fontSize: `${project.projectnameFontSize || 1.2}rem`,
+                        color: project.projectnameColor || '#0f172a',
+                        fontFamily: project.projectnameFontFamily || 'Arial',
+                        fontWeight: project.projectnameBold ? 700 : 400,
+                        fontStyle: project.projectnameItalic ? 'italic' : 'normal',
+                        textDecoration: project.projectnameUnderline ? 'underline' : 'none',
+                        textAlign: 'center',
+                        lineHeight: 1.5,
+                      }}>
                         {project.projectname}
                       </h3>
                     </div>

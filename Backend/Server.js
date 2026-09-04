@@ -5,6 +5,7 @@ const cookieParser = require('cookie-parser');
 const cluster = require('cluster');
 const os = require('os');
 const http = require('http');
+const path = require('path');
 
 require('./Connection');
 const authRoute = require('./Routes/authRoute');
@@ -68,6 +69,7 @@ function createApp() {
 
   app.use(express.json({ limit: '1mb' }));
   app.use(cookieParser());
+  app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
   app.use((req, res, next) => {
     if (req.method !== 'GET' || !req.path.startsWith('/api/public/')) {

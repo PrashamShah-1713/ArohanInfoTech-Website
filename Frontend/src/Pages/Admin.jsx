@@ -25,6 +25,12 @@ const initialInternship = {
 const initialProject = {
   projectname: '',
   projectimage: '',
+  projectnameColor: '#0f172a',
+  projectnameFontFamily: 'Arial',
+  projectnameFontSize: 1.2,
+  projectnameBold: false,
+  projectnameItalic: false,
+  projectnameUnderline: false,
   page: 'portfolio',
   isPublished: true,
 };
@@ -76,6 +82,7 @@ const Admin = () => {
   const [teamForm, setTeamForm] = useState(initialTeamMember);
   const [internForm, setInternForm] = useState(initialIntern);
   const [notification, setNotification] = useState({ message: '', type: 'info' });
+  const [uploadingImage, setUploadingImage] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState({ open: false, type: null, id: null });
 
   useEffect(() => {
@@ -191,6 +198,25 @@ const Admin = () => {
     }
   };
 
+  const handleProjectImageUpload = async (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append('image', file);
+    try {
+      setUploadingImage(true);
+      const response = await axios.post(`${API}/admin/projects/upload-image`, formData, getHeaders());
+      setProjectForm((current) => ({ ...current, projectimage: response.data.data.url }));
+      setNotification({ message: 'Project image uploaded', type: 'success' });
+    } catch (err) {
+      setNotification({ message: err.response?.data?.message || 'Image upload failed', type: 'error' });
+    } finally {
+      setUploadingImage(false);
+      event.target.value = '';
+    }
+  };
+
   const handleDelete = async (type, id) => {
     try {
       let url = '';
@@ -236,6 +262,12 @@ const Admin = () => {
       setProjectForm({
         projectname: item.projectname,
         projectimage: item.projectimage,
+        projectnameColor: item.projectnameColor || '#0f172a',
+        projectnameFontFamily: item.projectnameFontFamily || 'Arial',
+        projectnameFontSize: item.projectnameFontSize || 1.2,
+        projectnameBold: item.projectnameBold || false,
+        projectnameItalic: item.projectnameItalic || false,
+        projectnameUnderline: item.projectnameUnderline || false,
         page: item.page || 'portfolio',
         isPublished: item.isPublished !== undefined ? item.isPublished : true,
       });
@@ -321,6 +353,31 @@ const Admin = () => {
               placeholder="Project image URL"
               className={styles.fullWidth}
             />
+            <div className={`${styles.fullWidth} ${styles.uploadRow}`}>
+              <input
+                value={projectForm.projectimage}
+                onChange={(e) => setProjectForm({ ...projectForm, projectimage: e.target.value })}
+                placeholder="Project image URL"
+              />
+              <label className={styles.fileButton}>
+                {uploadingImage ? 'Uploading...' : 'Choose local image'}
+                <input type="file" accept="image/jpeg,image/png,image/gif,image/webp,image/svg+xml" onChange={handleProjectImageUpload} disabled={uploadingImage} />
+              </label>
+            </div>
+            <div className={`${styles.styleControls} ${styles.fullWidth}`}>
+              <select value={projectForm.projectnameFontFamily} onChange={(e) => setProjectForm({ ...projectForm, projectnameFontFamily: e.target.value })} aria-label="Project name font">
+                <option value="Arial">Arial</option>
+                <option value="Georgia">Georgia</option>
+                <option value="Verdana">Verdana</option>
+                <option value="Trebuchet MS">Trebuchet MS</option>
+                <option value="Courier New">Courier New</option>
+              </select>
+              <input type="number" min="0.8" max="3" step="0.1" value={projectForm.projectnameFontSize} onChange={(e) => setProjectForm({ ...projectForm, projectnameFontSize: e.target.value })} aria-label="Project name size" />
+              <label className={styles.colorControl}>Color <input type="color" value={projectForm.projectnameColor} onChange={(e) => setProjectForm({ ...projectForm, projectnameColor: e.target.value })} /></label>
+              <label><input type="checkbox" checked={projectForm.projectnameBold} onChange={(e) => setProjectForm({ ...projectForm, projectnameBold: e.target.checked })} /> Bold</label>
+              <label><input type="checkbox" checked={projectForm.projectnameItalic} onChange={(e) => setProjectForm({ ...projectForm, projectnameItalic: e.target.checked })} /> Italic</label>
+              <label><input type="checkbox" checked={projectForm.projectnameUnderline} onChange={(e) => setProjectForm({ ...projectForm, projectnameUnderline: e.target.checked })} /> Underline</label>
+            </div>
           </div>
           <div className={styles.formActions}>
             <button className={styles.successButton} onClick={() => handleCreateOrUpdate('project')}>{formMode.type === 'project' ? 'Update Project' : 'Add Project'}</button>
