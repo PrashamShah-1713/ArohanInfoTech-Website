@@ -94,7 +94,7 @@ const Portfolio = () => {
                     <div style={{ padding: '1.2rem 1.1rem 1.35rem', display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 1 }}>
                       <h3 style={{
                         margin: 0,
-                        fontSize: `${project.projectnameFontSize || 1.2}rem`,
+                        fontSize: `${project.projectnameFontSize > 3 ? project.projectnameFontSize : project.projectnameFontSize || 1.2}${project.projectnameFontSize > 3 ? 'px' : 'rem'}`,
                         color: project.projectnameColor || '#0f172a',
                         fontFamily: project.projectnameFontFamily || 'Arial',
                         fontWeight: project.projectnameBold ? 700 : 400,
@@ -103,7 +103,11 @@ const Portfolio = () => {
                         textAlign: 'center',
                         lineHeight: 1.5,
                       }}>
-                        {project.projectname}
+                        {project.projectlink ? (
+                          <a href={project.projectlink} target="_blank" rel="noreferrer" style={{ color: 'inherit', textDecoration: 'inherit' }}>
+                            {project.projectname}
+                          </a>
+                        ) : project.projectname}
                       </h3>
                     </div>
                   </article>

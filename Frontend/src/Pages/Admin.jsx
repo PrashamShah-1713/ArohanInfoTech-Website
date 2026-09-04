@@ -25,9 +25,10 @@ const initialInternship = {
 const initialProject = {
   projectname: '',
   projectimage: '',
+  projectlink: '',
   projectnameColor: '#0f172a',
   projectnameFontFamily: 'Arial',
-  projectnameFontSize: 1.2,
+  projectnameFontSize: 18,
   projectnameBold: false,
   projectnameItalic: false,
   projectnameUnderline: false,
@@ -262,9 +263,10 @@ const Admin = () => {
       setProjectForm({
         projectname: item.projectname,
         projectimage: item.projectimage,
+        projectlink: item.projectlink || '',
         projectnameColor: item.projectnameColor || '#0f172a',
         projectnameFontFamily: item.projectnameFontFamily || 'Arial',
-        projectnameFontSize: item.projectnameFontSize || 1.2,
+        projectnameFontSize: item.projectnameFontSize > 3 ? item.projectnameFontSize : 18,
         projectnameBold: item.projectnameBold || false,
         projectnameItalic: item.projectnameItalic || false,
         projectnameUnderline: item.projectnameUnderline || false,
@@ -347,12 +349,6 @@ const Admin = () => {
               placeholder="Project name / Client brand name"
               className={styles.fullWidth}
             />
-            <input
-              value={projectForm.projectimage}
-              onChange={(e) => setProjectForm({ ...projectForm, projectimage: e.target.value })}
-              placeholder="Project image URL"
-              className={styles.fullWidth}
-            />
             <div className={`${styles.fullWidth} ${styles.uploadRow}`}>
               <input
                 value={projectForm.projectimage}
@@ -364,6 +360,13 @@ const Admin = () => {
                 <input type="file" accept="image/jpeg,image/png,image/gif,image/webp,image/svg+xml" onChange={handleProjectImageUpload} disabled={uploadingImage} />
               </label>
             </div>
+            <input
+              type="url"
+              value={projectForm.projectlink}
+              onChange={(e) => setProjectForm({ ...projectForm, projectlink: e.target.value })}
+              placeholder="Project link (https://...)"
+              className={styles.fullWidth}
+            />
             <div className={`${styles.styleControls} ${styles.fullWidth}`}>
               <select value={projectForm.projectnameFontFamily} onChange={(e) => setProjectForm({ ...projectForm, projectnameFontFamily: e.target.value })} aria-label="Project name font">
                 <option value="Arial">Arial</option>
@@ -371,8 +374,15 @@ const Admin = () => {
                 <option value="Verdana">Verdana</option>
                 <option value="Trebuchet MS">Trebuchet MS</option>
                 <option value="Courier New">Courier New</option>
+                <option value="Times New Roman">Times New Roman</option>
+                <option value="Garamond">Garamond</option>
+                <option value="Tahoma">Tahoma</option>
+                <option value="Impact">Impact</option>
+                <option value="Lucida Console">Lucida Console</option>
+                <option value="Palatino Linotype">Palatino Linotype</option>
+                <option value="Brush Script MT">Brush Script MT</option>
               </select>
-              <input type="number" min="0.8" max="3" step="0.1" value={projectForm.projectnameFontSize} onChange={(e) => setProjectForm({ ...projectForm, projectnameFontSize: e.target.value })} aria-label="Project name size" />
+              <input type="number" min="8" max="72" step="1" value={projectForm.projectnameFontSize} onChange={(e) => setProjectForm({ ...projectForm, projectnameFontSize: e.target.value })} aria-label="Project name size" />
               <label className={styles.colorControl}>Color <input type="color" value={projectForm.projectnameColor} onChange={(e) => setProjectForm({ ...projectForm, projectnameColor: e.target.value })} /></label>
               <label><input type="checkbox" checked={projectForm.projectnameBold} onChange={(e) => setProjectForm({ ...projectForm, projectnameBold: e.target.checked })} /> Bold</label>
               <label><input type="checkbox" checked={projectForm.projectnameItalic} onChange={(e) => setProjectForm({ ...projectForm, projectnameItalic: e.target.checked })} /> Italic</label>

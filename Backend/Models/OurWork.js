@@ -24,9 +24,9 @@ const OurProjectsSchema = new mongoose.Schema({
 
     projectnameFontSize: {
         type: Number,
-        default: 1.2,
-        min: 0.8,
-        max: 3,
+        default: 18,
+        min: 0.5,
+        max: 72,
     },
 
     projectnameBold: {
