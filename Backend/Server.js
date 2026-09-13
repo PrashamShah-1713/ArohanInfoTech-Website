@@ -2,7 +2,6 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
-const helmet = require('helmet');
 const cluster = require('cluster');
 const os = require('os');
 const http = require('http');
@@ -43,7 +42,6 @@ function createApp() {
 
   app.disable('x-powered-by');
   app.set('trust proxy', 1);
-  app.use(helmet());
 
   const configuredOrigins = (process.env.CORS_ORIGINS || '')
     .split(',')
