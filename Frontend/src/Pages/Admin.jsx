@@ -84,7 +84,6 @@ const Admin = () => {
   const [internForm, setInternForm] = useState(initialIntern);
   const [notification, setNotification] = useState({ message: '', type: 'info' });
   const [uploadingImage, setUploadingImage] = useState(false);
-  const [projectImagePreview, setProjectImagePreview] = useState('');
   const [confirmDelete, setConfirmDelete] = useState({ open: false, type: null, id: null });
 
   useEffect(() => {
@@ -145,7 +144,6 @@ const Admin = () => {
     setFormMode({ type: null, id: null });
     setInternshipForm(initialInternship);
     setProjectForm(initialProject);
-    setProjectImagePreview('');
     setTeamForm(initialTeamMember);
     setInternForm(initialIntern);
   };
@@ -210,9 +208,7 @@ const Admin = () => {
     try {
       setUploadingImage(true);
       const response = await axios.post(`${API}/admin/projects/upload-image`, formData, getHeaders());
-      const imageUrl = response.data.data.url;
-      setProjectForm((current) => ({ ...current, projectimage: imageUrl }));
-      setProjectImagePreview(imageUrl);
+      setProjectForm((current) => ({ ...current, projectimage: response.data.data.url }));
       setNotification({ message: 'Project image uploaded', type: 'success' });
     } catch (err) {
       setNotification({ message: err.response?.data?.message || 'Image upload failed', type: 'error' });
@@ -277,7 +273,6 @@ const Admin = () => {
         page: item.page || 'portfolio',
         isPublished: item.isPublished !== undefined ? item.isPublished : true,
       });
-      setProjectImagePreview(item.projectimage || '');
     }
 
     if (type === 'team') {
@@ -358,20 +353,13 @@ const Admin = () => {
               <input
                 value={projectForm.projectimage}
                 onChange={(e) => setProjectForm({ ...projectForm, projectimage: e.target.value })}
-                placeholder="Project image URL or choose a local image"
+                placeholder="Project image URL"
               />
               <label className={styles.fileButton}>
                 {uploadingImage ? 'Uploading...' : 'Choose local image'}
-                <input type="file" accept="image/*" onChange={handleProjectImageUpload} disabled={uploadingImage} />
+                <input type="file" accept="image/jpeg,image/png,image/gif,image/webp,image/svg+xml" onChange={handleProjectImageUpload} disabled={uploadingImage} />
               </label>
             </div>
-            {projectImagePreview && (
-              <img
-                src={projectImagePreview}
-                alt="Selected project"
-                className={`${styles.fullWidth} ${styles.projectImagePreview}`}
-              />
-            )}
             <input
               type="url"
               value={projectForm.projectlink}

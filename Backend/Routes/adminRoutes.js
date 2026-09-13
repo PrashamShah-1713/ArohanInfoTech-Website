@@ -4,6 +4,7 @@ const path = require('path');
 const multer = require('multer');
 const router = express.Router();
 const authMiddleware = require('../Middlewares/middleware');
+const { requireAdmin } = require('../Middlewares/security');
 const { getAllInternships, createInternship, updateInternship, deleteInternship } = require('../controllers/internshipController');
 const { getAllProjects, createProject, updateProject, deleteProject } = require('../controllers/ourWorkController');
 const { getAllTeamMembers, createTeamMember, updateTeamMember, deleteTeamMember } = require('../controllers/teamController');
@@ -25,23 +26,12 @@ const uploadProjectImage = multer({
   storage: imageStorage,
   limits: { fileSize: 5 * 1024 * 1024 },
   fileFilter: (req, file, callback) => {
-    callback(null, file.mimetype.startsWith('image/'));
+    callback(null, /^image\/(jpeg|png|gif|webp|svg\+xml)$/.test(file.mimetype));
   },
 });
 
 router.use(authMiddleware);
-router.use((req, res, next) => {
-  if (!req.user) {
-    return res.status(401).json({ success: false, message: 'Not authenticated' });
-  }
-
-  const role = String(req.user.role || '').toLowerCase();
-  if (role !== 'admin') {
-    return res.status(403).json({ success: false, message: 'Admin access required' });
-  }
-
-  next();
-});
+router.use(requireAdmin);
 
 router.get('/overview', async (req, res) => {
   try {
@@ -93,7 +83,7 @@ router.delete('/internships/:id', deleteInternship);
 router.get('/projects', getAllProjects);
 router.post('/projects/upload-image', uploadProjectImage.single('image'), (req, res) => {
   if (!req.file) {
-    return res.status(400).json({ success: false, message: 'Please choose a valid image file up to 5 MB' });
+    return res.status(400).json({ success: false, message: 'Please choose a valid image (JPEG, PNG, GIF, WEBP, or SVG)' });
   }
 
   const imagePath = `/uploads/projects/${req.file.filename}`;

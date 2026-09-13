@@ -3,8 +3,24 @@ const User = require('../Models/Users');
 const Interns = require('../Models/Inters-students');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-const { sendPasswordResetOtpEmail } = require('../utils/emailService');
-const secretKey = process.env.JWT_SECRET || 'ShriGanesh11@ArohanInfoTech';
+const { sendPasswordResetOtpEmail, sendEmailVerificationEmail, getEmailStatus } = require('../utils/emailService');
+const secretKey = process.env.JWT_SECRET || (process.env.NODE_ENV === 'production' ? null : 'development-only-secret');
+
+if (!secretKey) {
+  throw new Error('JWT_SECRET must be configured in production');
+}
+
+const cookieOptions = {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === 'production',
+  sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+  path: '/',
+  maxAge: 7 * 24 * 60 * 60 * 1000,
+};
+
+function hashToken(token) {
+  return crypto.createHash('sha256').update(token).digest('hex');
+}
 
 function setuser(user) {
   return jwt.sign(
@@ -40,8 +56,20 @@ async function createUser(req, res) {
       return res.status(400).json({ success: false, message: 'All fields are required' });
     }
 
+    if (!/^\S+@\S+\.\S+$/.test(useremail)) {
+      return res.status(400).json({ success: false, message: 'A valid email address is required' });
+    }
+
+    if (String(userpassword).length < 8) {
+      return res.status(400).json({ success: false, message: 'Password must be at least 8 characters' });
+    }
+
     if (userpassword !== userconfirmPassword) {
       return res.status(400).json({ success: false, message: 'Passwords do not match' });
+    }
+
+    if (!getEmailStatus().valid) {
+      return res.status(503).json({ success: false, message: 'Email verification is temporarily unavailable. Please try again later.' });
     }
 
     const existingUser = await User.findOne({ $or: [{ username }, { useremail }] });
@@ -51,38 +79,28 @@ async function createUser(req, res) {
 
     const hashedPassword = await bcrypt.hash(userpassword, 10);
 
+    const verificationToken = crypto.randomBytes(32).toString('hex');
     const user = await User.create({
       username,
       useremail,
       usermobile,
       userpassword: hashedPassword,
       userrole: 'user',
+      emailVerificationToken: hashToken(verificationToken),
+      emailVerificationExpiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
     });
 
-    const token = setuser(user);
+    const verificationUrl = `${req.protocol}://${req.get('host')}/api/Users/verify-email?email=${encodeURIComponent(user.useremail)}&token=${verificationToken}`;
+    await sendEmailVerificationEmail({ to: user.useremail, username: user.username, verificationUrl });
 
-    res.cookie('uid', token, {
-      httpOnly: true,
-      sameSite: 'lax',
-      path: '/',
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
-
-    res.status(201).json({
+    return res.status(201).json({
       success: true,
-      message: 'User created successfully and logged in',
-      token: token,
-      user: {
-        _id: user._id,
-        username: user.username,
-        useremail: user.useremail,
-        usermobile: user.usermobile,
-        role: user.userrole,
-      },
+      message: 'Account created. Check your email to verify your account before logging in.',
     });
   } catch (err) {
+    console.error('Create user failed:', err);
     const message = err.code === 11000 ? 'Email already registered' : 'Unable to create account';
-    res.status(400).json({ success: false, message });
+    return res.status(err.statusCode || 400).json({ success: false, message });
   }
 }
 
@@ -99,6 +117,10 @@ async function login(req, res) {
       return res.status(401).json({ success: false, message: 'Invalid username or password' });
     }
 
+    if (user.emailVerified === false) {
+      return res.status(403).json({ success: false, message: 'Please verify your email before logging in' });
+    }
+
     const isMatch = await bcrypt.compare(userpassword, user.userpassword);
     if (!isMatch) {
       return res.status(401).json({ success: false, message: 'Invalid username or password' });
@@ -106,17 +128,11 @@ async function login(req, res) {
 
     const token = setuser(user);
 
-    res.cookie('uid', token, {
-      httpOnly: true,
-      sameSite: 'lax',
-      path: '/',
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
+    res.cookie('uid', token, cookieOptions);
 
     res.json({
       success: true,
       message: 'Login success',
-      token: token,
       user: {
         _id: user._id,
         username: user.username,
@@ -127,6 +143,29 @@ async function login(req, res) {
     });
   } catch (err) {
     res.status(500).json({ success: false, message: 'Login error' });
+  }
+}
+
+async function verifyEmail(req, res) {
+  try {
+    const { email, token } = req.query;
+    const user = await User.findOne({
+      useremail: email,
+      emailVerificationToken: hashToken(String(token || '')),
+      emailVerificationExpiresAt: { $gt: new Date() },
+    });
+
+    if (!user) {
+      return res.status(400).send('This verification link is invalid or expired.');
+    }
+
+    user.emailVerified = true;
+    user.emailVerificationToken = null;
+    user.emailVerificationExpiresAt = null;
+    await user.save();
+    return res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:5173'}/login?verified=1`);
+  } catch (error) {
+    return res.status(500).send('Unable to verify email.');
   }
 }
 
@@ -218,7 +257,7 @@ async function verifyOtp(req, res) {
     user.resetOtp = null;
     user.resetOtpExpiresAt = null;
     user.resetPasswordVerified = true;
-    user.resetPasswordToken = resetToken;
+    user.resetPasswordToken = hashToken(resetToken);
     await user.save();
 
     return res.json({ success: true, message: 'OTP verified successfully', resetToken });
@@ -239,12 +278,16 @@ async function forgotPassword(req, res) {
       return res.status(400).json({ success: false, message: 'Passwords do not match' });
     }
 
+    if (String(newPassword).length < 8) {
+      return res.status(400).json({ success: false, message: 'Password must be at least 8 characters' });
+    }
+
     const user = await User.findOne({ $or: [{ username }, { useremail: username }] });
     if (!user) {
       return res.status(404).json({ success: false, message: 'User not found' });
     }
 
-    if (!user.resetPasswordVerified || user.resetPasswordToken !== resetToken) {
+    if (!user.resetPasswordVerified || user.resetPasswordToken !== hashToken(resetToken)) {
       return res.status(403).json({ success: false, message: 'Please verify OTP before resetting your password' });
     }
 
@@ -302,9 +345,8 @@ async function updateCurrentUser(req, res) {
 
 function logout(req, res) {
   res.clearCookie('uid', {
-    httpOnly: true,
-    sameSite: 'lax',
-    path: '/',
+    ...cookieOptions,
+    maxAge: undefined,
   });
 
   res.json({ success: true, message: 'Logged out successfully' });
@@ -313,6 +355,7 @@ function logout(req, res) {
 module.exports = {
   createUser,
   login,
+  verifyEmail,
   setuser,
   getuser,
   getCurrentUser,

@@ -92,6 +92,32 @@ async function sendPasswordResetOtpEmail({ to, username, otp }) {
   }
 }
 
+async function sendEmailVerificationEmail({ to, username, verificationUrl }) {
+  const status = getEmailStatus();
+
+  if (!emailConfigValid || !transporter) {
+    throw new Error(`Email service not configured. Status: ${JSON.stringify(status)}`);
+  }
+
+  if (!to || !verificationUrl) {
+    throw new Error('Recipient email address and verification URL are required');
+  }
+
+  await transporter.sendMail({
+    from: process.env.EMAIL_FROM || process.env.EMAIL_USER,
+    to,
+    subject: 'Arohan InfoTech: Verify your email address',
+    html: `
+      <div style="font-family: Arial, sans-serif; color: #0f172a; line-height: 1.7;">
+        <h2>Hello ${username || 'User'},</h2>
+        <p>Verify your email address to activate your Arohan InfoTech account.</p>
+        <p><a href="${verificationUrl}">Verify email address</a></p>
+        <p>This link expires in 24 hours.</p>
+      </div>
+    `,
+  });
+}
+
 async function sendInternshipEnrollmentEmail({ to, username, internshipTitle, internshipDuration, startDate, userDetails }) {
   const status = getEmailStatus();
   console.log('[EMAIL] sendInternshipEnrollmentEmail called', { to, status });
@@ -141,6 +167,7 @@ async function sendInternshipEnrollmentEmail({ to, username, internshipTitle, in
 
 module.exports = {
   sendPasswordResetOtpEmail,
+  sendEmailVerificationEmail,
   sendInternshipEnrollmentEmail,
   getEmailStatus,
 };

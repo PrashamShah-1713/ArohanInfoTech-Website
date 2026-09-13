@@ -34,9 +34,6 @@ const CreateAccount = () => {
       );
 
       setNotification({ message: response.data.message || "Account created successfully", type: "success" });
-      if (response.data.success) {
-        window.location.href = "/login";
-      }
     } catch (err) {
       setNotification({ message: err.response?.data?.message || "Unable to create account", type: "error" });
     }

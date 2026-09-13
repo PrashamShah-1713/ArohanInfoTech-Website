@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
+const helmet = require('helmet');
 const cluster = require('cluster');
 const os = require('os');
 const http = require('http');
@@ -11,6 +12,7 @@ require('./Connection');
 const authRoute = require('./Routes/authRoute');
 const publicRoutes = require('./Routes/publicRoutes');
 const adminRoutes = require('./Routes/adminRoutes');
+const { apiLimiter } = require('./Middlewares/security');
 
 const PORT = process.env.PORT || 3000;
 const shouldUseCluster = process.env.NODE_ENV === 'production' && process.env.USE_CLUSTER === 'true';
@@ -41,6 +43,7 @@ function createApp() {
 
   app.disable('x-powered-by');
   app.set('trust proxy', 1);
+  app.use(helmet());
 
   const configuredOrigins = (process.env.CORS_ORIGINS || '')
     .split(',')
@@ -77,6 +80,7 @@ function createApp() {
 
   app.use(express.json({ limit: '1mb' }));
   app.use(cookieParser());
+  app.use('/api', apiLimiter);
   app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
   app.use((req, res, next) => {
