@@ -25,7 +25,7 @@ const uploadProjectImage = multer({
   storage: imageStorage,
   limits: { fileSize: 5 * 1024 * 1024 },
   fileFilter: (req, file, callback) => {
-    callback(null, /^image\/(jpeg|png|gif|webp|svg\+xml)$/.test(file.mimetype));
+    callback(null, file.mimetype.startsWith('image/'));
   },
 });
 
@@ -93,7 +93,7 @@ router.delete('/internships/:id', deleteInternship);
 router.get('/projects', getAllProjects);
 router.post('/projects/upload-image', uploadProjectImage.single('image'), (req, res) => {
   if (!req.file) {
-    return res.status(400).json({ success: false, message: 'Please choose a valid image (JPEG, PNG, GIF, WEBP, or SVG)' });
+    return res.status(400).json({ success: false, message: 'Please choose a valid image file up to 5 MB' });
   }
 
   const imagePath = `/uploads/projects/${req.file.filename}`;
