@@ -42,10 +42,18 @@ function createApp() {
   app.disable('x-powered-by');
   app.set('trust proxy', 1);
 
+  const configuredOrigins = (process.env.CORS_ORIGINS || '')
+    .split(',')
+    .map((origin) => origin.trim())
+    .filter(Boolean);
+
   const allowedOrigins = [
     'http://localhost:5173',
     'http://localhost:3000',
-    'https://arohaninfotech-frontend.onrender.com'
+    'https://arohaninfotech-frontend.onrender.com',
+    'https://arohaninfotech.com',
+    'https://www.arohaninfotech.com',
+    ...configuredOrigins,
   ];
 
   app.use(

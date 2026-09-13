@@ -59,7 +59,8 @@ async function createProject(req, res) {
     });
     res.status(201).json({ success: true, data: project, message: 'Product created successfully' });
   } catch (err) {
-    res.status(500).json({ success: false, message: 'Unable to create product' });
+    console.error('Create project failed:', err);
+    res.status(500).json({ success: false, message: err.name === 'ValidationError' ? err.message : 'Unable to create product' });
   }
 }
 
@@ -74,7 +75,8 @@ async function updateProject(req, res) {
     }
     res.json({ success: true, data: project, message: 'Product updated successfully' });
   } catch (err) {
-    res.status(500).json({ success: false, message: 'Unable to update product' });
+    console.error('Update project failed:', err);
+    res.status(500).json({ success: false, message: err.name === 'ValidationError' ? err.message : 'Unable to update product' });
   }
 }
 
