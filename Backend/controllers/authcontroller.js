@@ -3,7 +3,7 @@ const User = require('../Models/Users');
 const Interns = require('../Models/Inters-students');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-const { sendPasswordResetOtpEmail, sendEmailVerificationEmail, getEmailStatus } = require('../utils/emailService');
+const { sendPasswordResetOtpEmail } = require('../utils/emailService');
 const secretKey = process.env.JWT_SECRET || (process.env.NODE_ENV === 'production' ? null : 'development-only-secret');
 
 if (!secretKey) {
@@ -68,10 +68,6 @@ async function createUser(req, res) {
       return res.status(400).json({ success: false, message: 'Passwords do not match' });
     }
 
-    if (!getEmailStatus().valid) {
-      return res.status(503).json({ success: false, message: 'Email verification is temporarily unavailable. Please try again later.' });
-    }
-
     const existingUser = await User.findOne({ $or: [{ username }, { useremail }] });
     if (existingUser) {
       return res.status(400).json({ success: false, message: 'Email or username already registered' });
@@ -79,23 +75,28 @@ async function createUser(req, res) {
 
     const hashedPassword = await bcrypt.hash(userpassword, 10);
 
-    const verificationToken = crypto.randomBytes(32).toString('hex');
     const user = await User.create({
       username,
       useremail,
       usermobile,
       userpassword: hashedPassword,
       userrole: 'user',
-      emailVerificationToken: hashToken(verificationToken),
-      emailVerificationExpiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
     });
 
-    const verificationUrl = `${req.protocol}://${req.get('host')}/api/Users/verify-email?email=${encodeURIComponent(user.useremail)}&token=${verificationToken}`;
-    await sendEmailVerificationEmail({ to: user.useremail, username: user.username, verificationUrl });
+    const token = setuser(user);
+    res.cookie('uid', token, cookieOptions);
 
     return res.status(201).json({
       success: true,
-      message: 'Account created. Check your email to verify your account before logging in.',
+      message: 'User created successfully and logged in',
+      token,
+      user: {
+        _id: user._id,
+        username: user.username,
+        useremail: user.useremail,
+        usermobile: user.usermobile,
+        role: user.userrole,
+      },
     });
   } catch (err) {
     console.error('Create user failed:', err);
@@ -115,10 +116,6 @@ async function login(req, res) {
     const user = await User.findOne({ $or: [{ username }, { useremail: username }] });
     if (!user) {
       return res.status(401).json({ success: false, message: 'Invalid username or password' });
-    }
-
-    if (user.emailVerified === false) {
-      return res.status(403).json({ success: false, message: 'Please verify your email before logging in' });
     }
 
     const isMatch = await bcrypt.compare(userpassword, user.userpassword);
@@ -143,29 +140,6 @@ async function login(req, res) {
     });
   } catch (err) {
     res.status(500).json({ success: false, message: 'Login error' });
-  }
-}
-
-async function verifyEmail(req, res) {
-  try {
-    const { email, token } = req.query;
-    const user = await User.findOne({
-      useremail: email,
-      emailVerificationToken: hashToken(String(token || '')),
-      emailVerificationExpiresAt: { $gt: new Date() },
-    });
-
-    if (!user) {
-      return res.status(400).send('This verification link is invalid or expired.');
-    }
-
-    user.emailVerified = true;
-    user.emailVerificationToken = null;
-    user.emailVerificationExpiresAt = null;
-    await user.save();
-    return res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:5173'}/login?verified=1`);
-  } catch (error) {
-    return res.status(500).send('Unable to verify email.');
   }
 }
 
@@ -355,7 +329,6 @@ function logout(req, res) {
 module.exports = {
   createUser,
   login,
-  verifyEmail,
   setuser,
   getuser,
   getCurrentUser,
